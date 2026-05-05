@@ -39,3 +39,13 @@ yarn-error.log*
 # typescript
 *.tsbuildinfo
 next-env.d.ts
+
+# claude code (commit shared, ignore personal/build artifacts)
+.claude/settings.local.json
+.claude/skills/*/node_modules
+.claude/skills/*/package-lock.json
+.claude/scripts/*.local.*
+screenshots/
+
+# brand guide preview artifacts (the .html stays committed)
+public/logo_preview.png
