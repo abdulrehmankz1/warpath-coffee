@@ -21,7 +21,7 @@ export default function LoginPage() {
         title={
           <>
             Stand the watch.{" "}
-            <em className="font-italic italic font-normal text-brass-500 normal-case tracking-[-.025em]">
+            <em className="not-italic text-brass-500 normal-case tracking-[-.025em]">
               Sign in.
             </em>
           </>

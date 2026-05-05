@@ -148,32 +148,36 @@ export function SiteHeader() {
               >
                 Sign In
               </Link>
+              {/* Mobile-only icon-style cart fallback (matches drawer button) */}
               <Link
                 href="/cart"
                 aria-label="View cart, 0 items"
                 className={cn(
-                  "group inline-flex items-center justify-center min-w-[44px] min-h-[44px] sm:gap-2 font-mono font-semibold text-xs tracking-[.18em] uppercase motion-safe:transition-colors motion-safe:duration-150 px-2 sm:px-3 focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-brass-500",
+                  "md:hidden inline-flex items-center justify-center min-w-[44px] min-h-[44px] motion-safe:transition-colors motion-safe:duration-150 focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-brass-500",
                   scrolled ? "text-combat-900 hover:text-brass-700" : "text-cream-50 hover:text-brass-400"
                 )}
                 data-event="nav_cart"
               >
-                <ShoppingBag
-                  size={18}
-                  strokeWidth={1.6}
-                  aria-hidden="true"
-                  className="motion-safe:transition-transform motion-safe:duration-300 motion-safe:group-hover:-translate-y-0.5 motion-safe:group-hover:rotate-[-6deg]"
-                />
-                <span className="hidden md:inline">Cart · 0</span>
+                <ShoppingBag size={18} strokeWidth={1.6} aria-hidden="true" />
               </Link>
+
+              {/* Primary brass CTA — now Cart instead of Shop Coffee */}
               <div className="hidden md:block py-2 sm:py-3">
                 <Button
                   variant="brass"
                   size="sm"
-                  href={HERO.primaryCta.href}
-                  opCode="OP-SHOP"
-                  data-event="nav_cta"
+                  href="/cart"
+                  data-event="nav_cart_cta"
+                  aria-label="View cart, 0 items"
+                  className="group"
                 >
-                  Shop Coffee
+                  <ShoppingBag
+                    size={15}
+                    strokeWidth={1.8}
+                    aria-hidden="true"
+                    className="motion-safe:transition-transform motion-safe:duration-300 motion-safe:group-hover:-translate-y-0.5 motion-safe:group-hover:rotate-[-6deg] -ml-1 mr-2"
+                  />
+                  Cart · 0
                 </Button>
               </div>
               <button

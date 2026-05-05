@@ -221,7 +221,7 @@ export function WelcomeModal() {
                 className="font-display font-black uppercase leading-[0.95] tracking-[-0.02em] text-[clamp(1.5rem,5vw,2.5rem)]"
               >
                 {WELCOME_OFFER.successTitleA}{" "}
-                <em className="font-italic italic font-normal text-brass-500 normal-case">
+                <em className="not-italic text-brass-500 normal-case">
                   {WELCOME_OFFER.successTitleB}
                 </em>
               </h2>
@@ -249,7 +249,7 @@ export function WelcomeModal() {
               >
                 {WELCOME_OFFER.title}
               </h2>
-              <p className="mt-2 font-italic italic text-brass-300/90 text-[clamp(1.1rem,2.4vw,1.65rem)] leading-[1.2]">
+              <p className="mt-2 font-display font-medium text-brass-300/90 text-[clamp(1.1rem,2.4vw,1.65rem)] leading-[1.2]">
                 {WELCOME_OFFER.titleSub}
               </p>
 

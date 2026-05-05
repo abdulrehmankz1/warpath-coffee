@@ -23,10 +23,7 @@ export function FounderStrip() {
           {/* Portrait */}
           <div className="relative order-2 lg:order-1 group">
             <div className="relative aspect-[3/4] max-w-[320px] sm:max-w-[400px] lg:max-w-[440px] mx-auto">
-              <div
-                className="absolute inset-0 overflow-hidden"
-                style={{ borderRadius: "240px 240px 28px 28px" }}
-              >
+              <div className="absolute inset-0 overflow-hidden border border-brass-500/30">
                 <Image
                   src={FOUNDER.image}
                   alt={`${FOUNDER.name} — ${FOUNDER.role}`}
@@ -74,7 +71,7 @@ export function FounderStrip() {
               title={
                 <span id="founder-headline">
                   Roasted by people who{" "}
-                  <em className="font-italic italic font-normal text-brass-500 normal-case tracking-[-.025em]">
+                  <em className="not-italic text-brass-500 normal-case tracking-[-.025em]">
                     stand a watch.
                   </em>
                 </span>

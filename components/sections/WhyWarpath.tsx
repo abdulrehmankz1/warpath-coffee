@@ -20,7 +20,7 @@ export function WhyWarpath() {
           title={
             <span id="why-headline">
               Built for the cup that{" "}
-              <em className="font-italic italic font-normal text-brass-500 normal-case">earns</em>{" "}
+              <em className="not-italic text-brass-500 normal-case">earns</em>{" "}
               daily duty.
             </span>
           }
@@ -60,7 +60,7 @@ export function WhyWarpath() {
                 </div>
                 <div className="font-display font-black uppercase tracking-[-0.018em] leading-[0.95] text-[clamp(1.4rem,2.2vw,2rem)] text-cream-50">
                   We don’t burn{" "}
-                  <em className="font-italic italic font-normal text-brass-500 normal-case">
+                  <em className="not-italic text-brass-500 normal-case">
                     our beans.
                   </em>
                 </div>

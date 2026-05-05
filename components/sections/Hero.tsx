@@ -19,8 +19,8 @@ export function Hero() {
         aria-hidden="true"
       >
         <div className="font-display font-black text-[120px] sm:text-[160px] lg:text-[200px] leading-[0.8] tracking-[-.04em] uppercase whitespace-nowrap text-brass-500/[0.05] flex motion-safe:animate-[marquee_60s_linear_infinite] gap-16">
-          <span>WARPATH · <em className="font-italic italic font-normal text-brass-500/[0.18]">drink it black</em> · WARPATH ·</span>
-          <span>WARPATH · <em className="font-italic italic font-normal text-brass-500/[0.18]">drink it black</em> · WARPATH ·</span>
+          <span>WARPATH · <em className="not-italic font-normal text-brass-500/[0.18]">drink it black</em> · WARPATH ·</span>
+          <span>WARPATH · <em className="not-italic font-normal text-brass-500/[0.18]">drink it black</em> · WARPATH ·</span>
         </div>
       </div>
 
@@ -50,21 +50,21 @@ export function Hero() {
               </span>
             </div>
 
-            {/* Headline — tighter rhythm */}
+            {/* Headline — relaxed line rhythm */}
             <h1
               id="hero-headline"
-              className="font-display font-black uppercase leading-[0.84] sm:leading-[0.82] tracking-[-0.035em] text-[clamp(2.5rem,9vw,7.5rem)] text-cream-50"
+              className="font-display font-black uppercase leading-[1.02] sm:leading-[1.0] tracking-[-0.035em] text-[clamp(2.5rem,9vw,7.5rem)] text-cream-50"
             >
               <span className="block">{HERO.headlinePrimary}</span>
-              <span className="block -mt-1 sm:-mt-2">
-                <span className="font-italic italic font-normal text-brass-500 normal-case tracking-[-0.045em] leading-[0.9] inline-block">
+              <span className="block">
+                <span className="text-brass-500 tracking-[-0.045em] leading-[1.0] inline-block">
                   {HERO.headlineSecondaryItalic}
                 </span>
               </span>
             </h1>
 
             {/* Tagline — sits outside H1 so it doesn't pollute heading semantics */}
-            <p className="mt-4 sm:mt-5 font-italic italic text-brass-300/90 text-[clamp(1.05rem,2.2vw,1.75rem)] leading-[1.25] tracking-[-0.005em] max-w-[34ch]">
+            <p className="mt-4 sm:mt-5 font-display font-medium text-brass-300/90 text-[clamp(1.05rem,2.2vw,1.75rem)] leading-[1.25] tracking-[-0.005em] max-w-[34ch]">
               {HERO.headlineThird}
             </p>
 
@@ -122,10 +122,7 @@ export function Hero() {
           {/* Right 5/12 — Product visual (gutter padding so floating chips don't get clipped) */}
           <div className="lg:col-span-5 relative px-3 sm:px-5 pt-4 pb-6 motion-safe:[animation:wp-fade-up_1100ms_var(--ease-out-warpath)_200ms_both]">
             <div className="relative aspect-[4/5] max-w-[320px] sm:max-w-[400px] lg:max-w-[440px] mx-auto group">
-              <div
-                className="absolute inset-0 overflow-hidden"
-                style={{ borderRadius: "240px 240px 28px 28px" }}
-              >
+              <div className="absolute inset-0 overflow-hidden border border-brass-500/30">
                 <Image
                   src={FLAGSHIP.image}
                   alt={`${FLAGSHIP.name} — flagship product`}

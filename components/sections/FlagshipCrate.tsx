@@ -20,7 +20,7 @@ export function FlagshipCrate() {
           sec="§ FLAGSHIP"
           title={
             <>
-              The cup that <em className="font-italic italic font-normal text-brass-500 normal-case">earns</em> the second pour.
+              The cup that <em className="not-italic text-brass-500 normal-case">earns</em> the second pour.
             </>
           }
           desc={FLAGSHIP.description}
@@ -30,10 +30,7 @@ export function FlagshipCrate() {
           {/* Visual — arched bag */}
           <div className="relative order-2 lg:order-1 group">
             <div className="relative aspect-[4/5] max-w-[320px] sm:max-w-[400px] lg:max-w-[440px] mx-auto">
-              <div
-                className="absolute inset-0 overflow-hidden"
-                style={{ borderRadius: "240px 240px 28px 28px" }}
-              >
+              <div className="absolute inset-0 overflow-hidden border border-combat-900/30">
                 <Image
                   src={FLAGSHIP.image}
                   alt={`${FLAGSHIP.name} — 12oz bag`}
@@ -75,7 +72,7 @@ export function FlagshipCrate() {
                 className="font-stencil font-black text-[clamp(1.5rem,3vw,2.5rem)] uppercase leading-[1] tracking-[0.01em]"
               >
                 Smooth as command.{" "}
-                <em className="font-italic italic font-normal text-brass-500 normal-case tracking-[-.02em]">
+                <em className="not-italic text-brass-500 normal-case tracking-[-.02em]">
                   Strong as the watch.
                 </em>
               </h3>

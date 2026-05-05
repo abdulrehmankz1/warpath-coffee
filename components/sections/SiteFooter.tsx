@@ -34,7 +34,7 @@ export function SiteFooter() {
               Comms · Join the Roster
             </div>
             <h3 className="font-display font-black uppercase text-[clamp(1.5rem,3.5vw,2.5rem)] tracking-[-.018em] leading-[1] text-cream-50">
-              Get the drops <em className="font-italic italic font-normal text-brass-500 normal-case">before they ship.</em>
+              Get the drops <em className="not-italic text-brass-500 normal-case">before they ship.</em>
             </h3>
           </div>
           <form

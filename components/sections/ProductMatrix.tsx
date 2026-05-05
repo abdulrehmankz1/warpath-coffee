@@ -26,7 +26,7 @@ export function ProductMatrix() {
             title={
               <span id="matrix-headline">
                 Every roast,{" "}
-                <em className="font-italic italic font-normal text-brass-500 normal-case">
+                <em className="not-italic text-brass-500 normal-case">
                   one mission.
                 </em>
               </span>

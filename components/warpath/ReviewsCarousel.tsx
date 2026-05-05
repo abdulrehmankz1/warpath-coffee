@@ -350,7 +350,7 @@ export function ReviewsCarousel() {
                   <blockquote className="flex-1 font-display font-bold text-[clamp(1.05rem,1.7vw,1.4rem)] leading-[1.35] text-combat-900 tracking-[-.012em]">
                     <span
                       aria-hidden="true"
-                      className="font-italic italic text-brass-500 text-3xl leading-none mr-1 align-top"
+                      className="text-brass-500 text-3xl leading-none mr-1 align-top"
                     >
                       “
                     </span>

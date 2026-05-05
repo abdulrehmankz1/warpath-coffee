@@ -37,7 +37,7 @@ export function ReviewsLog() {
           sec="§ FIELD REPORTS"
           title={
             <span id="reviews-headline">
-              Verified <em className="font-italic italic font-normal text-brass-500 normal-case">cups in hand.</em>
+              Verified <em className="not-italic text-brass-500 normal-case">cups in hand.</em>
             </span>
           }
           desc="Real customers, verified through our order system. The best coffee ever — that’s their words, not ours."
