@@ -1,6 +1,5 @@
 import Image from "next/image";
 import Link from "next/link";
-import { Button } from "@/components/warpath/Button";
 import { Coords } from "@/components/warpath/Coords";
 import { BRAND, FOOTER_COLS, SHIPPING } from "@/lib/data/warpath";
 
@@ -53,9 +52,12 @@ export function SiteFooter() {
               placeholder="you@example.com"
               className="bg-combat-800 border border-brass-500/40 text-cream-50 placeholder:text-cream-50/40 px-4 sm:px-5 py-3 sm:py-4 font-mono text-sm w-full sm:min-w-[280px] focus:outline-none focus:border-brass-500 focus-visible:ring-2 focus-visible:ring-brass-500"
             />
-            <Button variant="brass" size="base" href="#" opCode="OP-JOIN">
+            <button
+              type="submit"
+              className="relative inline-flex items-center justify-center bg-brass-500 text-combat-900 font-mono font-bold uppercase rounded-none border-0 cursor-pointer px-8 py-4 min-h-[48px] text-[11px] tracking-[.22em] gap-3 motion-safe:transition-colors motion-safe:duration-300 motion-safe:hover:-translate-y-[1px] hover:bg-combat-900 hover:text-brass-400 hover:shadow-[inset_0_0_0_2px_var(--color-brass-500)] active:translate-y-0 focus-visible:outline-2 focus-visible:outline-offset-3 focus-visible:outline-brass-500 [clip-path:polygon(0_0,calc(100%_-_16px)_0,100%_50%,calc(100%_-_16px)_100%,0_100%)] pr-9"
+            >
               Join the Roster →
-            </Button>
+            </button>
           </form>
         </div>
       </div>

@@ -139,6 +139,16 @@ export function SiteHeader() {
             {/* Actions */}
             <div className="flex items-center gap-1 sm:gap-3">
               <Link
+                href="/login"
+                className={cn(
+                  "hidden md:inline-flex items-center min-h-[44px] px-2 font-mono font-semibold text-[11px] tracking-[.20em] uppercase motion-safe:transition-colors motion-safe:duration-150 focus-visible:outline-2 focus-visible:outline-offset-3 focus-visible:outline-brass-500",
+                  scrolled ? "text-combat-900 hover:text-brass-700" : "text-cream-50 hover:text-brass-400",
+                )}
+                data-event="nav_signin"
+              >
+                Sign In
+              </Link>
+              <Link
                 href="/cart"
                 aria-label="View cart, 0 items"
                 className={cn(
@@ -261,6 +271,22 @@ export function SiteHeader() {
             <Button variant="ghost" size="base" href="/subscribe" className="w-full !text-cream-50 !shadow-[inset_0_0_0_1.5px_var(--color-brass-500)]">
               Subscribe
             </Button>
+            <div className="grid grid-cols-2 gap-3 pt-2 mt-2 border-t border-brass-500/20">
+              <Link
+                href="/login"
+                onClick={() => setOpen(false)}
+                className="font-mono font-bold text-[11px] tracking-[.22em] uppercase text-cream-50 text-center py-3 border border-brass-500/40 hover:bg-brass-500 hover:text-combat-900 motion-safe:transition-colors motion-safe:duration-200 focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-brass-500"
+              >
+                Sign In
+              </Link>
+              <Link
+                href="/signup"
+                onClick={() => setOpen(false)}
+                className="font-mono font-bold text-[11px] tracking-[.22em] uppercase text-cream-50 text-center py-3 border border-brass-500/40 hover:bg-brass-500 hover:text-combat-900 motion-safe:transition-colors motion-safe:duration-200 focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-brass-500"
+              >
+                Create Account
+              </Link>
+            </div>
           </div>
         </div>
       )}

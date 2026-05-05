@@ -7,6 +7,7 @@ import {
   JetBrains_Mono,
 } from "next/font/google";
 import "./globals.css";
+import { WelcomeModal } from "@/components/warpath/WelcomeModal";
 
 const bigShoulders = Big_Shoulders({
   variable: "--font-big-shoulders",
@@ -93,10 +94,8 @@ export default function RootLayout({
       className={`${bigShoulders.variable} ${bigShouldersStencil.variable} ${fraunces.variable} ${inter.variable} ${jetbrains.variable} h-full`}
     >
       <body className="min-h-full flex flex-col bg-bone-100 text-ash-800 font-body">
-        <a href="#main" className="skip-link">
-          Skip to content
-        </a>
         {children}
+        <WelcomeModal />
       </body>
     </html>
   );
