@@ -4,6 +4,7 @@ import { useMemo, useState, type FormEvent } from "react";
 import Link from "next/link";
 import { Check } from "lucide-react";
 import { AuthField } from "./AuthField";
+import { BladeButton } from "./BladeButton";
 import { cn } from "@/lib/cn";
 
 type Status =
@@ -200,13 +201,9 @@ export function SignupForm() {
         </div>
       )}
 
-      <button
-        type="submit"
-        disabled={submitting}
-        className="relative inline-flex items-center justify-center bg-brass-500 text-combat-900 font-mono font-bold uppercase rounded-none border-0 cursor-pointer px-8 py-4 min-h-[52px] text-[12px] tracking-[.24em] gap-3 motion-safe:transition-[background-color,color,transform] motion-safe:duration-300 motion-safe:hover:-translate-y-[1px] hover:bg-combat-900 hover:text-brass-400 hover:shadow-[inset_0_0_0_2px_var(--color-brass-500)] active:translate-y-0 disabled:opacity-60 disabled:pointer-events-none focus-visible:outline-2 focus-visible:outline-offset-3 focus-visible:outline-brass-500 [clip-path:polygon(0_0,calc(100%_-_16px)_0,100%_50%,calc(100%_-_16px)_100%,0_100%)] pr-9"
-      >
+      <BladeButton type="submit" variant="brass" size="lg" disabled={submitting}>
         {submitting ? "Enrolling…" : "Create Account + Claim 15% Off"}
-      </button>
+      </BladeButton>
 
       <p className="font-mono text-[10px] sm:text-[11px] tracking-[.16em] uppercase text-cream-50/55 leading-[1.6] font-semibold">
         By creating your account, you agree to our{" "}

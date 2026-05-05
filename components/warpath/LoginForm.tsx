@@ -3,6 +3,7 @@
 import { useState, type FormEvent } from "react";
 import Link from "next/link";
 import { AuthField } from "./AuthField";
+import { BladeButton } from "./BladeButton";
 
 type Status =
   | { state: "idle" }
@@ -113,14 +114,9 @@ export function LoginForm() {
         </div>
       )}
 
-      {/* Submit */}
-      <button
-        type="submit"
-        disabled={submitting}
-        className="relative inline-flex items-center justify-center bg-brass-500 text-combat-900 font-mono font-bold uppercase rounded-none border-0 cursor-pointer px-8 py-4 min-h-[52px] text-[12px] tracking-[.24em] gap-3 motion-safe:transition-[background-color,color,transform] motion-safe:duration-300 motion-safe:hover:-translate-y-[1px] hover:bg-combat-900 hover:text-brass-400 hover:shadow-[inset_0_0_0_2px_var(--color-brass-500)] active:translate-y-0 disabled:opacity-60 disabled:pointer-events-none focus-visible:outline-2 focus-visible:outline-offset-3 focus-visible:outline-brass-500 [clip-path:polygon(0_0,calc(100%_-_16px)_0,100%_50%,calc(100%_-_16px)_100%,0_100%)] pr-9"
-      >
+      <BladeButton type="submit" variant="brass" size="lg" disabled={submitting}>
         {submitting ? "Authenticating…" : "Sign In"}
-      </button>
+      </BladeButton>
 
       <div className="text-[12px] sm:text-[13px] font-mono tracking-[.10em] text-cream-50/60">
         New here?{" "}

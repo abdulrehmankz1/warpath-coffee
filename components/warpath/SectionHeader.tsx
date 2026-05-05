@@ -4,6 +4,7 @@ import { useEffect, useRef } from "react";
 import { gsap } from "gsap";
 import { ScrollTrigger } from "gsap/ScrollTrigger";
 import { cn } from "@/lib/cn";
+import { SectionBadge } from "./SectionBadge";
 
 if (typeof window !== "undefined") {
   gsap.registerPlugin(ScrollTrigger);
@@ -125,14 +126,6 @@ export function SectionHeader({
   const eyebrowColor = tone === "dark" ? "text-brass-400" : "text-brass-600";
   const descColor = tone === "dark" ? "text-cream-50/72" : "text-ash-600";
 
-  // Badge palette (the new section name treatment)
-  const badgeBg =
-    tone === "dark"
-      ? "bg-brass-500 text-combat-900"
-      : "bg-combat-900 text-brass-400";
-  const badgeAccent =
-    tone === "dark" ? "text-combat-900/70" : "text-brass-400/70";
-
   const secLabel = cleanSecLabel(sec);
 
   const titleLines =
@@ -159,35 +152,12 @@ export function SectionHeader({
         className,
       )}
     >
-      {/* Section badge — brass ribbon + framed number tag */}
-      <div
-        data-anim="badge"
-        className={cn(
-          "flex w-fit items-stretch gap-1.5 sm:gap-2 mb-7 sm:mb-9",
-          align === "center" && "mx-auto",
-        )}
-      >
-        <span
-          aria-hidden="true"
-          className={cn(
-            "inline-flex items-center justify-center min-w-[40px] px-2 font-mono font-black text-[11px] tracking-[.18em] uppercase",
-            tone === "dark" ? "bg-brass-500 text-combat-900" : "bg-brass-500 text-combat-900",
-          )}
-        >
-          §
-        </span>
-        <span
-          className={cn(
-            "inline-flex items-center pl-3 pr-4 sm:pl-4 sm:pr-5 font-mono font-bold text-[10px] sm:text-[11px] tracking-[.28em] sm:tracking-[.32em] uppercase whitespace-nowrap",
-            badgeBg,
-          )}
-        >
-          {secLabel}
-          <span className={cn("ml-3 sm:ml-4 text-[9px]", badgeAccent)}>
-            ●
-          </span>
-        </span>
-      </div>
+      <SectionBadge
+        label={secLabel}
+        tone={tone}
+        align={align}
+        className="mb-7 sm:mb-9"
+      />
 
       <div
         className={cn(

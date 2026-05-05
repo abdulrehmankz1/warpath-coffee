@@ -8,8 +8,11 @@ import {
   useState,
   type FormEvent,
 } from "react";
-import { X } from "lucide-react";
+import { X, Star } from "lucide-react";
 import { cn } from "@/lib/cn";
+import { WELCOME_OFFER, FLAGSHIP, formatReviewCount } from "@/lib/data/warpath";
+import { SectionBadge } from "./SectionBadge";
+import { BladeButton } from "./BladeButton";
 
 const STORAGE_DISMISSED = "warpath_modal_dismissed_at";
 const STORAGE_SUBSCRIBED = "warpath_modal_subscribed";
@@ -42,6 +45,9 @@ function shouldSuppress(): boolean {
 export function WelcomeModal() {
   const [open, setOpen] = useState(false);
   const [status, setStatus] = useState<Status>({ kind: "idle" });
+  const [preference, setPreference] = useState<string>(
+    WELCOME_OFFER.preferences[1].code, // Dark Roast — flagship default
+  );
   const dialogRef = useRef<HTMLDivElement | null>(null);
   const closeBtnRef = useRef<HTMLButtonElement | null>(null);
   const previouslyFocused = useRef<HTMLElement | null>(null);
@@ -54,44 +60,35 @@ export function WelcomeModal() {
     setOpen(false);
   }, []);
 
-  // ----- Trigger: exit-intent (desktop) + scroll/time (mobile) -----
+  // Trigger
   useEffect(() => {
     if (typeof window === "undefined") return;
     if (shouldSuppress()) return;
 
     let armed = false;
-    const armTimer = window.setTimeout(() => {
-      armed = true;
-    }, MIN_DELAY_MS);
-
+    const armTimer = window.setTimeout(() => (armed = true), MIN_DELAY_MS);
     const isCoarsePointer = window.matchMedia("(pointer: coarse)").matches;
 
     const fire = () => {
-      if (!armed) return;
-      if (shouldSuppress()) return;
+      if (!armed || shouldSuppress()) return;
       setOpen(true);
       cleanup();
     };
 
-    // Desktop exit-intent: cursor leaves through the top edge
     const onMouseOut = (e: MouseEvent) => {
       if (e.relatedTarget) return;
       if (e.clientY > 12) return;
       fire();
     };
 
-    // Mobile: 80% scroll depth
     const onScroll = () => {
       const max = document.documentElement.scrollHeight - window.innerHeight;
       if (max <= 0) return;
-      const pct = window.scrollY / max;
-      if (pct >= MOBILE_SCROLL_PCT) fire();
+      if (window.scrollY / max >= MOBILE_SCROLL_PCT) fire();
     };
 
-    // Mobile fallback timer
     const fallbackTimer = window.setTimeout(() => {
-      if (!isCoarsePointer) return; // desktop relies on exit-intent only
-      fire();
+      if (isCoarsePointer) fire();
     }, MOBILE_TIMEOUT_MS);
 
     if (!isCoarsePointer) {
@@ -109,11 +106,11 @@ export function WelcomeModal() {
     return cleanup;
   }, []);
 
-  // ----- A11y: lock scroll, trap focus, escape -----
+  // A11y: scroll lock + focus trap + escape
   useEffect(() => {
     if (!open) return;
     previouslyFocused.current = document.activeElement as HTMLElement | null;
-    const prevOverflow = document.body.style.overflow;
+    const prev = document.body.style.overflow;
     document.body.style.overflow = "hidden";
 
     const onKey = (e: KeyboardEvent) => {
@@ -125,30 +122,27 @@ export function WelcomeModal() {
       if (e.key === "Tab") {
         const root = dialogRef.current;
         if (!root) return;
-        const focusables = root.querySelectorAll<HTMLElement>(
+        const f = root.querySelectorAll<HTMLElement>(
           'button:not([disabled]), [href], input:not([disabled]), select:not([disabled]), textarea:not([disabled]), [tabindex]:not([tabindex="-1"])',
         );
-        if (focusables.length === 0) return;
-        const first = focusables[0];
-        const last = focusables[focusables.length - 1];
-        const active = document.activeElement;
-        if (e.shiftKey && active === first) {
+        if (!f.length) return;
+        const first = f[0];
+        const last = f[f.length - 1];
+        if (e.shiftKey && document.activeElement === first) {
           e.preventDefault();
           last.focus();
-        } else if (!e.shiftKey && active === last) {
+        } else if (!e.shiftKey && document.activeElement === last) {
           e.preventDefault();
           first.focus();
         }
       }
     };
-
     window.addEventListener("keydown", onKey);
-    // Initial focus
     requestAnimationFrame(() => closeBtnRef.current?.focus());
 
     return () => {
       window.removeEventListener("keydown", onKey);
-      document.body.style.overflow = prevOverflow;
+      document.body.style.overflow = prev;
       previouslyFocused.current?.focus?.();
     };
   }, [open, dismiss]);
@@ -195,13 +189,13 @@ export function WelcomeModal() {
     >
       <div
         ref={dialogRef}
-        className="w-full max-w-[520px] bg-combat-900 text-cream-50 border border-brass-500 shadow-[0_30px_80px_rgba(0,0,0,.55)] motion-safe:[animation:wp-fade-up_280ms_var(--ease-out-warpath)_both]"
+        className="w-full max-w-[560px] bg-combat-900 text-cream-50 border border-brass-500 shadow-[0_30px_80px_rgba(0,0,0,.55)] motion-safe:[animation:wp-fade-up_280ms_var(--ease-out-warpath)_both]"
         style={{ position: "relative" }}
       >
-        {/* Header bar */}
+        {/* Header bar — same intake pattern as IntakeCard */}
         <div className="grid grid-cols-[auto_1fr_auto] items-center gap-3 px-5 sm:px-6 py-3 bg-brass-500/[0.10] border-b border-dashed border-brass-500/40 font-mono text-[10px] tracking-[.24em] uppercase text-brass-400 font-bold">
           <span className="flex items-center gap-2 before:content-[''] before:w-2 before:h-2 before:bg-brass-500 before:rounded-full">
-            OP-WELCOME · 15
+            INTAKE · OP-WELCOME · 015
           </span>
           <span aria-hidden="true" className="text-cream-50/40 text-center hidden sm:block text-[9px]">
             ▓ ▓ ▓ ▓ ▓ ▓ ▓ ▓
@@ -217,84 +211,130 @@ export function WelcomeModal() {
           </button>
         </div>
 
-        {/* Body */}
         <div className="px-5 sm:px-7 py-7 sm:py-8">
           {success ? (
+            // Success state
             <div className="grid gap-4">
-              <div className="flex w-fit items-stretch gap-1.5">
-                <span className="inline-flex items-center justify-center min-w-[36px] px-2 font-mono font-black text-[11px] tracking-[.18em] uppercase bg-olive-500 text-bone-50">
-                  ✓
-                </span>
-                <span className="inline-flex items-center pl-3 pr-4 font-mono font-bold text-[10px] tracking-[.26em] uppercase whitespace-nowrap bg-olive-500 text-bone-50">
-                  ENROLLED
-                </span>
-              </div>
+              <SectionBadge symbol="✓" label="Enrolled" tone="dark" />
               <h2
                 id={titleId}
                 className="font-display font-black uppercase leading-[0.95] tracking-[-0.02em] text-[clamp(1.5rem,5vw,2.5rem)]"
               >
-                Code dispatched.{" "}
+                {WELCOME_OFFER.successTitleA}{" "}
                 <em className="font-italic italic font-normal text-brass-500 normal-case">
-                  Check your inbox.
+                  {WELCOME_OFFER.successTitleB}
                 </em>
               </h2>
               <p id={descId} className="text-[14px] leading-[1.6] text-cream-50/72">
-                We just sent your <b className="text-brass-400">15% off</b> code to{" "}
-                <b className="text-cream-50">{success.email}</b>. Drink it black, no sugar necessary.
+                {WELCOME_OFFER.successBody.split("{{email}}")[0]}
+                <b className="text-cream-50">{success.email}</b>
+                {WELCOME_OFFER.successBody.split("{{email}}")[1]}
               </p>
-              <button
-                type="button"
-                onClick={() => setOpen(false)}
-                className={cn(
-                  "mt-2 relative inline-flex items-center justify-center bg-brass-500 text-combat-900 font-mono font-bold uppercase rounded-none border-0 cursor-pointer px-7 py-3.5 min-h-[48px] text-[11px] tracking-[.22em] gap-3",
-                  "motion-safe:transition-colors motion-safe:duration-300 hover:bg-combat-800 hover:text-brass-400 hover:shadow-[inset_0_0_0_2px_var(--color-brass-500)]",
-                  "focus-visible:outline-2 focus-visible:outline-offset-3 focus-visible:outline-brass-500",
-                  "[clip-path:polygon(0_0,calc(100%_-_14px)_0,100%_50%,calc(100%_-_14px)_100%,0_100%)] pr-9",
-                )}
-              >
-                Get Brewing
-              </button>
+              <BladeButton onClick={() => setOpen(false)} variant="brass" size="base">
+                {WELCOME_OFFER.successCta}
+              </BladeButton>
             </div>
           ) : (
+            // Capture state
             <>
-              <div className="flex w-fit items-stretch gap-1.5 mb-5">
-                <span className="inline-flex items-center justify-center min-w-[36px] px-2 font-mono font-black text-[11px] tracking-[.18em] uppercase bg-brass-500 text-combat-900">
-                  §
-                </span>
-                <span className="inline-flex items-center pl-3 pr-4 font-mono font-bold text-[10px] tracking-[.26em] uppercase whitespace-nowrap bg-brass-500 text-combat-900">
-                  WELCOME · 15% OFF
-                </span>
-              </div>
+              <SectionBadge label={WELCOME_OFFER.badgeLabel} tone="dark" className="mb-5" />
 
+              {/* Big offer headline — typographic ramp matching the live popup */}
+              <div className="mb-2 font-mono font-bold text-[10px] sm:text-[11px] tracking-[.28em] uppercase text-brass-400">
+                {WELCOME_OFFER.eyebrow}
+              </div>
               <h2
                 id={titleId}
-                className="font-display font-black uppercase leading-[0.94] tracking-[-0.025em] text-[clamp(1.75rem,5.5vw,2.75rem)]"
+                className="font-display font-black uppercase leading-[0.86] tracking-[-0.04em] text-[clamp(2.5rem,9vw,4.75rem)] text-cream-50"
               >
-                Your first bag.{" "}
-                <em className="font-italic italic font-normal text-brass-500 normal-case tracking-[-.03em]">
-                  15% off. Deployed.
-                </em>
+                {WELCOME_OFFER.title}
               </h2>
-
-              <p id={descId} className="mt-4 text-[14px] sm:text-[15px] leading-[1.6] text-cream-50/72">
-                Enter your email and we’ll send you a code for{" "}
-                <b className="text-brass-400">15% off your first order</b>. No fluff. Just coffee.
+              <p className="mt-2 font-italic italic text-brass-300/90 text-[clamp(1.1rem,2.4vw,1.65rem)] leading-[1.2]">
+                {WELCOME_OFFER.titleSub}
               </p>
 
-              <form onSubmit={onSubmit} noValidate className="mt-6 grid gap-3">
-                <label className="sr-only" htmlFor={`${id}-email`}>
-                  Email
-                </label>
-                <input
-                  id={`${id}-email`}
-                  name="email"
-                  type="email"
-                  required
-                  autoComplete="email"
-                  inputMode="email"
-                  placeholder="you@example.com"
-                  className="w-full bg-bone-100 text-combat-900 placeholder:text-ash-500/70 font-mono text-[14px] sm:text-[15px] px-4 py-3.5 border border-canvas-400 focus:outline-none focus:border-brass-500 focus-visible:ring-2 focus-visible:ring-brass-500/40 transition-colors"
-                />
+              <p
+                id={descId}
+                className="mt-5 text-[14px] sm:text-[15px] leading-[1.6] text-cream-50/72 max-w-[46ch]"
+              >
+                {WELCOME_OFFER.pitch}
+              </p>
+
+              <form onSubmit={onSubmit} noValidate className="mt-6 grid gap-4">
+                {/* Roast-preference radio group — matches live popup */}
+                <fieldset className="grid gap-2">
+                  <legend className="font-mono font-bold text-[10px] tracking-[.24em] uppercase text-brass-400">
+                    {WELCOME_OFFER.preferenceLabel}
+                  </legend>
+                  <div className="grid grid-cols-2 gap-2 sm:gap-3">
+                    {WELCOME_OFFER.preferences.map((p) => {
+                      const active = preference === p.code;
+                      return (
+                        <label
+                          key={p.code}
+                          className={cn(
+                            "cursor-pointer relative border px-3 py-3 sm:py-3.5 motion-safe:transition-colors motion-safe:duration-200",
+                            active
+                              ? "border-brass-500 bg-brass-500/[0.12]"
+                              : "border-brass-500/30 hover:border-brass-500/60 bg-combat-800/40",
+                          )}
+                        >
+                          <input
+                            type="radio"
+                            name="preference"
+                            value={p.code}
+                            checked={active}
+                            onChange={() => setPreference(p.code)}
+                            className="sr-only"
+                          />
+                          <div className="font-stencil font-extrabold text-[15px] sm:text-[16px] uppercase tracking-[.02em] text-cream-50 leading-none">
+                            {p.label}
+                          </div>
+                          <div className="mt-1.5 font-mono text-[9px] sm:text-[10px] tracking-[.18em] uppercase text-brass-400 font-semibold">
+                            {p.note}
+                          </div>
+                          {active && (
+                            <span
+                              aria-hidden="true"
+                              className="absolute top-2 right-2 inline-flex items-center justify-center w-4 h-4 bg-brass-500 text-combat-900 text-[10px] font-bold"
+                            >
+                              ✓
+                            </span>
+                          )}
+                        </label>
+                      );
+                    })}
+                  </div>
+                </fieldset>
+
+                {/* Email */}
+                <div className="grid gap-2">
+                  <label
+                    htmlFor={`${id}-email`}
+                    className="font-mono font-bold text-[10px] tracking-[.24em] uppercase text-brass-400 inline-flex items-center gap-2"
+                  >
+                    Email
+                    <span
+                      aria-hidden="true"
+                      className="bg-brass-500 text-combat-900 font-mono text-[8px] tracking-[.20em] px-1.5 py-0.5"
+                    >
+                      REQ
+                    </span>
+                  </label>
+                  <input
+                    id={`${id}-email`}
+                    name="email"
+                    type="email"
+                    required
+                    autoComplete="email"
+                    inputMode="email"
+                    placeholder="you@example.com"
+                    className="w-full bg-bone-100 text-combat-900 placeholder:text-ash-500/70 font-mono text-[14px] sm:text-[15px] px-4 py-3.5 border border-canvas-400 focus:outline-none focus:border-brass-500 focus-visible:ring-2 focus-visible:ring-brass-500/40 transition-colors"
+                  />
+                  <p className="font-mono text-[10px] tracking-[.16em] uppercase text-cream-50/55 font-semibold">
+                    {WELCOME_OFFER.emailHint}
+                  </p>
+                </div>
 
                 {errorMsg && (
                   <div
@@ -306,32 +346,42 @@ export function WelcomeModal() {
                   </div>
                 )}
 
-                <button
-                  type="submit"
-                  disabled={submitting}
-                  className={cn(
-                    "relative inline-flex items-center justify-center bg-brass-500 text-combat-900 font-mono font-bold uppercase rounded-none border-0 cursor-pointer px-7 py-3.5 min-h-[48px] text-[11px] tracking-[.22em] gap-3",
-                    "motion-safe:transition-colors motion-safe:duration-300 hover:bg-combat-800 hover:text-brass-400 hover:shadow-[inset_0_0_0_2px_var(--color-brass-500)]",
-                    "disabled:opacity-60 disabled:pointer-events-none",
-                    "focus-visible:outline-2 focus-visible:outline-offset-3 focus-visible:outline-brass-500",
-                    "[clip-path:polygon(0_0,calc(100%_-_14px)_0,100%_50%,calc(100%_-_14px)_100%,0_100%)] pr-9",
-                  )}
-                >
-                  {submitting ? "Dispatching…" : "Claim 15% Off"}
-                </button>
+                <BladeButton type="submit" variant="brass" size="base" disabled={submitting}>
+                  {submitting ? "Dispatching…" : WELCOME_OFFER.ctaPrimary}
+                </BladeButton>
 
                 <button
                   type="button"
                   onClick={dismiss}
-                  className="mt-1 font-mono text-[11px] tracking-[.20em] uppercase text-cream-50/50 hover:text-cream-50/80 motion-safe:transition-colors motion-safe:duration-200 focus-visible:outline-2 focus-visible:outline-offset-3 focus-visible:outline-brass-500 self-start"
+                  className="font-mono text-[11px] tracking-[.20em] uppercase text-cream-50/50 hover:text-cream-50/80 motion-safe:transition-colors motion-safe:duration-200 focus-visible:outline-2 focus-visible:outline-offset-3 focus-visible:outline-brass-500 self-start"
                 >
-                  No thanks, I’ll pay full price
+                  {WELCOME_OFFER.ctaDeclining}
                 </button>
               </form>
 
-              <p className="mt-5 font-mono text-[9px] sm:text-[10px] tracking-[.20em] uppercase text-cream-50/45 leading-[1.6] font-semibold">
-                One-time email · No spam · Unsubscribe anytime
-              </p>
+              {/* Trust strip */}
+              <div className="mt-6 pt-5 border-t border-brass-500/20 flex items-center justify-between gap-4 flex-wrap">
+                <span
+                  className="inline-flex items-center gap-1 font-mono text-[10px] tracking-[.20em] uppercase text-brass-400 font-bold"
+                  aria-label={`${formatReviewCount((FLAGSHIP.reviews ?? 0) + 3786)} verified reviews, 4.9 stars`}
+                >
+                  <span className="inline-flex items-center gap-0.5 mr-1 text-brass-500">
+                    {[0, 1, 2, 3, 4].map((j) => (
+                      <Star
+                        key={j}
+                        size={11}
+                        strokeWidth={1.4}
+                        className="fill-brass-500"
+                        aria-hidden="true"
+                      />
+                    ))}
+                  </span>
+                  {formatReviewCount((FLAGSHIP.reviews ?? 0) + 3786)}+ Reviews
+                </span>
+                <span className="font-mono text-[9px] sm:text-[10px] tracking-[.20em] uppercase text-cream-50/45 font-semibold">
+                  {WELCOME_OFFER.fineprint}
+                </span>
+              </div>
             </>
           )}
         </div>

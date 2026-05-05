@@ -292,6 +292,34 @@ export const FOOTER_COLS = [
   },
 ] as const;
 
+/**
+ * Verified welcome-modal copy from the live warpath.coffee 15% OFF popup
+ * (captured 2026-05-04). Re-used by WelcomeModal.
+ */
+export const WELCOME_OFFER = {
+  badgeSymbol: "§",
+  badgeLabel: "Welcome · 15% Off",
+  eyebrow: "First Order Special",
+  title: "15% OFF",
+  titleSub: "your first order",
+  pitch:
+    "Sign up and get a proper welcome to the world of really good coffee. Be the first to hear about bold new blends, insider perks, and everything brewing at Warpath.",
+  emailHint: "Make sure your email is correct so we can ship your discount code.",
+  preferenceLabel: "What kind of cup do you stand a watch with?",
+  preferences: [
+    { code: "MED", label: "Medium Roast", note: "Smooth · bright" },
+    { code: "DRK", label: "Dark Roast", note: "Bold · low-acid" },
+  ],
+  ctaPrimary: "Get 15% Off",
+  ctaDeclining: "No thanks, I’ll pay full price",
+  fineprint: "One-time email · No spam · Unsubscribe anytime",
+  successTitleA: "Code dispatched.",
+  successTitleB: "Check your inbox.",
+  successBody:
+    "We just sent your 15% off code to {{email}}. Drink it black, no sugar necessary.",
+  successCta: "Get Brewing",
+} as const;
+
 export const formatUsd = (n: number) =>
   new Intl.NumberFormat("en-US", {
     style: "currency",
