@@ -44,7 +44,7 @@ export function SubscribeCTA() {
               className="font-display font-black uppercase leading-[0.92] tracking-[-.025em] text-[clamp(2rem,5.5vw,5rem)] text-cream-50"
             >
               Auto-deliver.{" "}
-              <em className="not-italic text-brass-500 normal-case tracking-[-.03em]">
+              <em className="not-italic text-brass-500 tracking-[-.03em]">
                 Never run dry.
               </em>
             </h2>

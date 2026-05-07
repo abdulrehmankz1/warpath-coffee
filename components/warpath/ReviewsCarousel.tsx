@@ -221,31 +221,40 @@ export function ReviewsCarousel() {
     if (window.matchMedia("(prefers-reduced-motion: reduce)").matches) return;
 
     const ctx = gsap.context(() => {
-      gsap.from(root.querySelectorAll("[data-rev-card]"), {
-        opacity: 0,
-        y: 36,
-        rotate: 1,
-        duration: 0.75,
-        ease: "power3.out",
-        stagger: 0.12,
-        scrollTrigger: {
-          trigger: root,
-          start: "top 80%",
-          toggleActions: "play none none none",
-        },
-      });
-      gsap.from(root.querySelectorAll("[data-rev-stat]"), {
-        opacity: 0,
-        y: 24,
-        duration: 0.6,
-        ease: "power3.out",
-        stagger: 0.08,
-        scrollTrigger: {
-          trigger: root,
-          start: "top 85%",
-          toggleActions: "play none none none",
-        },
-      });
+      const cards = root.querySelectorAll("[data-rev-card]");
+      const stats = root.querySelectorAll("[data-rev-stat]");
+      // immediateRender:false keeps elements visible if ScrollTrigger never fires.
+      if (cards.length) {
+        gsap.from(cards, {
+          opacity: 0,
+          y: 36,
+          rotate: 1,
+          duration: 0.75,
+          ease: "power3.out",
+          stagger: 0.12,
+          immediateRender: false,
+          scrollTrigger: {
+            trigger: root,
+            start: "top 80%",
+            toggleActions: "play none none none",
+          },
+        });
+      }
+      if (stats.length) {
+        gsap.from(stats, {
+          opacity: 0,
+          y: 24,
+          duration: 0.6,
+          ease: "power3.out",
+          stagger: 0.08,
+          immediateRender: false,
+          scrollTrigger: {
+            trigger: root,
+            start: "top 85%",
+            toggleActions: "play none none none",
+          },
+        });
+      }
     }, root);
     return () => ctx.revert();
   }, []);

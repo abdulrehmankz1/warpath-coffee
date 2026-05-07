@@ -71,7 +71,7 @@ export function FounderStrip() {
               title={
                 <span id="founder-headline">
                   Roasted by people who{" "}
-                  <em className="not-italic text-brass-500 normal-case tracking-[-.025em]">
+                  <em className="not-italic text-brass-500 tracking-[-.025em]">
                     stand a watch.
                   </em>
                 </span>

@@ -2,34 +2,34 @@ import type { Metadata } from "next";
 import { SiteHeader } from "@/components/warpath/SiteHeader";
 import { SiteFooter } from "@/components/sections/SiteFooter";
 import { AuthShell } from "@/components/warpath/AuthShell";
-import { LoginForm } from "@/components/warpath/LoginForm";
+import { ForgotPasswordForm } from "@/components/warpath/ForgotPasswordForm";
 
 export const metadata: Metadata = {
-  title: "Sign In",
+  title: "Reset Password",
   description:
-    "Sign in to your Warpath Coffee account to manage subscriptions, track orders, and access exclusive drops.",
+    "Reset your Warpath Coffee account password. We'll email a secure reset link.",
   robots: { index: false, follow: false },
 };
 
-export default function LoginPage() {
+export default function ForgotPasswordPage() {
   return (
     <>
       <SiteHeader />
       <AuthShell
-        opCode="OP-LOGIN"
-        intakeLabel="INTAKE · OP-LOGIN · 001"
+        opCode="OP-RESET"
+        intakeLabel="INTAKE · OP-RESET · 002"
         title={
           <>
-            Stand the watch.{" "}
+            Lock out?{" "}
             <em className="not-italic text-brass-500 tracking-[-.025em]">
-              Sign in.
+              Reset it.
             </em>
           </>
         }
-        subtitle="Manage your subscription, track shipments, redeem rewards, and grab exclusive drops before anyone else."
-        altCta={{ label: "New to Warpath?", href: "/signup" }}
+        subtitle="Drop your email and we'll send a secure reset link. The link works once and expires in 30 minutes."
+        altCta={{ label: "Remembered it?", href: "/login" }}
       >
-        <LoginForm />
+        <ForgotPasswordForm />
       </AuthShell>
       <SiteFooter />
     </>

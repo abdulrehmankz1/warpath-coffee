@@ -10,16 +10,21 @@ import {
 } from "react";
 import { X, Star } from "lucide-react";
 import { cn } from "@/lib/cn";
-import { WELCOME_OFFER, FLAGSHIP, formatReviewCount } from "@/lib/data/warpath";
+import { WELCOME_OFFER, REVIEW_TOTALS, formatReviewCount } from "@/lib/data/warpath";
 import { SectionBadge } from "./SectionBadge";
 import { BladeButton } from "./BladeButton";
+import { FormLegalNote } from "./FormLegalNote";
 
 const STORAGE_DISMISSED = "warpath_modal_dismissed_at";
 const STORAGE_SUBSCRIBED = "warpath_modal_subscribed";
 const SUPPRESS_DAYS = 30;
-const MIN_DELAY_MS = 20_000;
-const MOBILE_TIMEOUT_MS = 45_000;
-const MOBILE_SCROLL_PCT = 0.8;
+// Earliest the modal can fire after page load. Below 8s most first-time visitors
+// haven't begun engagement; above 12s many have bounced. 8s lands in the gap.
+const MIN_DELAY_MS = 8_000;
+// Mobile fallback if no scroll/exit-intent fires.
+const MOBILE_TIMEOUT_MS = 14_000;
+// Fire when reader has scrolled 50% — proves engagement without waiting for bounce.
+const SCROLL_FIRE_PCT = 0.5;
 
 type Status =
   | { kind: "idle" }
@@ -66,8 +71,20 @@ export function WelcomeModal() {
     if (shouldSuppress()) return;
 
     let armed = false;
-    const armTimer = window.setTimeout(() => (armed = true), MIN_DELAY_MS);
     const isCoarsePointer = window.matchMedia("(pointer: coarse)").matches;
+
+    const isPastScrollThreshold = () => {
+      const max = document.documentElement.scrollHeight - window.innerHeight;
+      if (max <= 0) return false;
+      return window.scrollY / max >= SCROLL_FIRE_PCT;
+    };
+
+    // On arm, fire immediately if user has already scrolled past the threshold —
+    // they've engaged enough to warrant the offer.
+    const armTimer = window.setTimeout(() => {
+      armed = true;
+      if (isPastScrollThreshold()) fire();
+    }, MIN_DELAY_MS);
 
     const fire = () => {
       if (!armed || shouldSuppress()) return;
@@ -82,19 +99,16 @@ export function WelcomeModal() {
     };
 
     const onScroll = () => {
-      const max = document.documentElement.scrollHeight - window.innerHeight;
-      if (max <= 0) return;
-      if (window.scrollY / max >= MOBILE_SCROLL_PCT) fire();
+      if (isPastScrollThreshold()) fire();
     };
 
-    const fallbackTimer = window.setTimeout(() => {
-      if (isCoarsePointer) fire();
-    }, MOBILE_TIMEOUT_MS);
+    const fallbackTimer = window.setTimeout(fire, MOBILE_TIMEOUT_MS);
 
+    // Both desktop AND mobile listen for scroll-engagement. Desktop adds
+    // exit-intent (mouseout near top edge) on top of that.
+    window.addEventListener("scroll", onScroll, { passive: true });
     if (!isCoarsePointer) {
       document.addEventListener("mouseout", onMouseOut);
-    } else {
-      window.addEventListener("scroll", onScroll, { passive: true });
     }
 
     function cleanup() {
@@ -157,8 +171,16 @@ export function WelcomeModal() {
     }
     setStatus({ kind: "submitting" });
     try {
-      // Stub — wire to /api/marketing/subscribe when ready
-      await new Promise((r) => setTimeout(r, 600));
+      const payload = { email, preference, source: "welcome-modal" };
+      const res = await fetch("/api/marketing/subscribe", {
+        method: "POST",
+        headers: { "content-type": "application/json" },
+        body: JSON.stringify(payload),
+      }).catch(() => null);
+      // Soft-fail: if endpoint isn't deployed yet, still mark subscribed locally
+      if (res && !res.ok && res.status !== 404) {
+        throw new Error("subscribe failed");
+      }
       try {
         window.localStorage.setItem(STORAGE_SUBSCRIBED, "1");
       } catch {}
@@ -221,7 +243,7 @@ export function WelcomeModal() {
                 className="font-display font-black uppercase leading-[0.95] tracking-[-0.02em] text-[clamp(1.5rem,5vw,2.5rem)]"
               >
                 {WELCOME_OFFER.successTitleA}{" "}
-                <em className="not-italic text-brass-500 normal-case">
+                <em className="not-italic text-brass-500">
                   {WELCOME_OFFER.successTitleB}
                 </em>
               </h2>
@@ -287,7 +309,7 @@ export function WelcomeModal() {
                             onChange={() => setPreference(p.code)}
                             className="sr-only"
                           />
-                          <div className="font-stencil font-extrabold text-[15px] sm:text-[16px] uppercase tracking-[.02em] text-cream-50 leading-none">
+                          <div className="font-display font-black text-[16px] sm:text-[16px] uppercase tracking-[.02em] text-cream-50 leading-none">
                             {p.label}
                           </div>
                           <div className="mt-1.5 font-mono text-[9px] sm:text-[10px] tracking-[.18em] uppercase text-brass-400 font-semibold">
@@ -316,7 +338,7 @@ export function WelcomeModal() {
                     Email
                     <span
                       aria-hidden="true"
-                      className="bg-brass-500 text-combat-900 font-mono text-[8px] tracking-[.20em] px-1.5 py-0.5"
+                      className="border border-alert-red text-alert-red font-mono text-[8px] tracking-[.20em] px-1.5 py-[1px]"
                     >
                       REQ
                     </span>
@@ -350,6 +372,8 @@ export function WelcomeModal() {
                   {submitting ? "Dispatching…" : WELCOME_OFFER.ctaPrimary}
                 </BladeButton>
 
+                <FormLegalNote tone="dark" />
+
                 <button
                   type="button"
                   onClick={dismiss}
@@ -363,7 +387,7 @@ export function WelcomeModal() {
               <div className="mt-6 pt-5 border-t border-brass-500/20 flex items-center justify-between gap-4 flex-wrap">
                 <span
                   className="inline-flex items-center gap-1 font-mono text-[10px] tracking-[.20em] uppercase text-brass-400 font-bold"
-                  aria-label={`${formatReviewCount((FLAGSHIP.reviews ?? 0) + 3786)} verified reviews, 4.9 stars`}
+                  aria-label={`${formatReviewCount(REVIEW_TOTALS.total)} verified reviews, 4.9 stars`}
                 >
                   <span className="inline-flex items-center gap-0.5 mr-1 text-brass-500">
                     {[0, 1, 2, 3, 4].map((j) => (
@@ -376,7 +400,7 @@ export function WelcomeModal() {
                       />
                     ))}
                   </span>
-                  {formatReviewCount((FLAGSHIP.reviews ?? 0) + 3786)}+ Reviews
+                  {formatReviewCount(REVIEW_TOTALS.total)}+ Reviews
                 </span>
                 <span className="font-mono text-[9px] sm:text-[10px] tracking-[.20em] uppercase text-cream-50/45 font-semibold">
                   {WELCOME_OFFER.fineprint}

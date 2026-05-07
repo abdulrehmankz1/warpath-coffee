@@ -11,8 +11,7 @@ import {
   PRODUCTS,
   filterAndSort,
   formatReviewCount,
-  FLAGSHIP,
-  SECONDARY,
+  REVIEW_TOTALS,
   SHIPPING,
 } from "@/lib/data/warpath";
 
@@ -64,8 +63,7 @@ export default async function ShopPage({
   const category = sp.category ?? "all";
   const sort = sp.sort ?? "best-sellers";
   const products = filterAndSort(PRODUCTS, { category, sort });
-  const totalReviews =
-    (FLAGSHIP.reviews ?? 0) + (SECONDARY.reviews ?? 0);
+  const totalReviews = REVIEW_TOTALS.total;
 
   return (
     <>
@@ -157,8 +155,8 @@ export default async function ShopPage({
               </div>
             ) : (
               <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 xl:grid-cols-4 gap-5 sm:gap-6">
-                {products.map((p) => (
-                  <ProductCard key={p.slug} product={p} />
+                {products.map((p, i) => (
+                  <ProductCard key={p.slug} product={p} priority={i < 4} />
                 ))}
               </div>
             )}

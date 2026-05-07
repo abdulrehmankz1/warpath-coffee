@@ -5,6 +5,7 @@ import Link from "next/link";
 import { Check } from "lucide-react";
 import { AuthField } from "./AuthField";
 import { BladeButton } from "./BladeButton";
+import { FormLegalNote } from "./FormLegalNote";
 import { cn } from "@/lib/cn";
 
 type Status =
@@ -205,17 +206,7 @@ export function SignupForm() {
         {submitting ? "Enrolling…" : "Create Account + Claim 15% Off"}
       </BladeButton>
 
-      <p className="font-mono text-[10px] sm:text-[11px] tracking-[.16em] uppercase text-cream-50/55 leading-[1.6] font-semibold">
-        By creating your account, you agree to our{" "}
-        <Link href="/terms-of-service" className="text-brass-400 hover:text-brass-300 underline underline-offset-4 decoration-brass-500/40">
-          Terms of Service
-        </Link>{" "}
-        and{" "}
-        <Link href="/privacy-policy" className="text-brass-400 hover:text-brass-300 underline underline-offset-4 decoration-brass-500/40">
-          Privacy Policy
-        </Link>
-        .
-      </p>
+      <FormLegalNote tone="dark" />
 
       <div className="text-[12px] sm:text-[13px] font-mono tracking-[.10em] text-cream-50/60">
         Already enrolled?{" "}

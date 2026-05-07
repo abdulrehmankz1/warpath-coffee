@@ -4,12 +4,12 @@ import { ReviewsCarousel } from "@/components/warpath/ReviewsCarousel";
 import {
   FLAGSHIP,
   SECONDARY,
+  REVIEW_TOTALS,
   formatReviewCount,
 } from "@/lib/data/warpath";
 
 export function ReviewsLog() {
-  const totalReviews =
-    (FLAGSHIP.reviews ?? 0) + (SECONDARY.reviews ?? 0);
+  const totalReviews = REVIEW_TOTALS.total;
 
   const stats = [
     { k: "Average", v: "4.9", sub: "out of 5", stars: true },
@@ -37,7 +37,7 @@ export function ReviewsLog() {
           sec="§ FIELD REPORTS"
           title={
             <span id="reviews-headline">
-              Verified <em className="not-italic text-brass-500 normal-case">cups in hand.</em>
+              Verified <em className="not-italic text-brass-500">cups in hand.</em>
             </span>
           }
           desc="Real customers, verified through our order system. The best coffee ever — that’s their words, not ours."

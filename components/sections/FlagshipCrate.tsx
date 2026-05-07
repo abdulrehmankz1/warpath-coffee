@@ -20,7 +20,7 @@ export function FlagshipCrate() {
           sec="§ FLAGSHIP"
           title={
             <>
-              The cup that <em className="not-italic text-brass-500 normal-case">earns</em> the second pour.
+              The cup that <em className="not-italic text-brass-500">earns</em> the second pour.
             </>
           }
           desc={FLAGSHIP.description}
@@ -71,8 +71,9 @@ export function FlagshipCrate() {
                 id="flagship-headline"
                 className="font-stencil font-black text-[clamp(1.5rem,3vw,2.5rem)] uppercase leading-[1] tracking-[0.01em]"
               >
-                Smooth as command.{" "}
-                <em className="not-italic text-brass-500 normal-case tracking-[-.02em]">
+                Smooth as command.
+                <br />
+                <em className="not-italic text-brass-500 tracking-[-.02em]">
                   Strong as the watch.
                 </em>
               </h3>

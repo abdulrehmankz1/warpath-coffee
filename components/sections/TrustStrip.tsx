@@ -1,5 +1,5 @@
 import { Shield, Coffee, Truck, Star } from "lucide-react";
-import { BRAND, SHIPPING, FLAGSHIP, formatReviewCount } from "@/lib/data/warpath";
+import { BRAND, SHIPPING, REVIEW_TOTALS, formatReviewCount } from "@/lib/data/warpath";
 
 const items = [
   {
@@ -23,7 +23,7 @@ const items = [
   {
     icon: Star,
     code: "TRUST · 04",
-    label: `${formatReviewCount(FLAGSHIP.reviews ?? 0)} Reviews`,
+    label: `${formatReviewCount(REVIEW_TOTALS.total)}+ Reviews`,
     sub: "Verified buyers · 4.9 average",
   },
 ];
@@ -52,10 +52,10 @@ export function TrustStrip() {
                 <div className="font-mono text-[9px] font-bold tracking-[.20em] sm:tracking-[.22em] uppercase text-brass-700 mb-1">
                   {it.code}
                 </div>
-                <div className="font-stencil font-extrabold text-[13px] sm:text-[14px] lg:text-[15px] uppercase tracking-[.01em] leading-tight text-combat-900">
+                <div className="font-display font-black text-[13px] sm:text-[14px] lg:text-[15px] uppercase tracking-[.01em] leading-tight text-combat-900">
                   {it.label}
                 </div>
-                <div className="font-body text-[11px] sm:text-[12px] text-ash-600 mt-1 leading-snug">
+                <div className="font-body text-[12px] sm:text-[12px] text-ash-600 mt-1 leading-snug">
                   {it.sub}
                 </div>
               </div>

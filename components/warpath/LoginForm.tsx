@@ -4,6 +4,7 @@ import { useState, type FormEvent } from "react";
 import Link from "next/link";
 import { AuthField } from "./AuthField";
 import { BladeButton } from "./BladeButton";
+import { FormLegalNote } from "./FormLegalNote";
 
 type Status =
   | { state: "idle" }
@@ -117,6 +118,8 @@ export function LoginForm() {
       <BladeButton type="submit" variant="brass" size="lg" disabled={submitting}>
         {submitting ? "Authenticating…" : "Sign In"}
       </BladeButton>
+
+      <FormLegalNote tone="dark" />
 
       <div className="text-[12px] sm:text-[13px] font-mono tracking-[.10em] text-cream-50/60">
         New here?{" "}

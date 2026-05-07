@@ -1,6 +1,6 @@
 "use client";
 
-import { useRouter, useSearchParams } from "next/navigation";
+import { usePathname, useRouter, useSearchParams } from "next/navigation";
 import { useCallback, useTransition } from "react";
 import { cn } from "@/lib/cn";
 import {
@@ -12,18 +12,36 @@ type Props = {
   resultsCount: number;
 };
 
+const COLLECTION_PREFIX = "/shop/collections/";
+
 export function ShopFilters({ resultsCount }: Props) {
   const router = useRouter();
+  const pathname = usePathname() ?? "/shop";
   const params = useSearchParams();
   const [pending, start] = useTransition();
-  const activeCategory = params.get("category") ?? "all";
+
+  const activeCategory = pathname.startsWith(COLLECTION_PREFIX)
+    ? pathname.slice(COLLECTION_PREFIX.length).split("/")[0]
+    : "all";
   const activeSort = params.get("sort") ?? "best-sellers";
 
-  const update = useCallback(
-    (key: string, value: string, defaultValue: string) => {
+  const navigateToCategory = useCallback(
+    (value: string) => {
+      const sortParam = activeSort === "best-sellers" ? "" : `?sort=${activeSort}`;
+      const target =
+        value === "all" ? `/shop${sortParam}` : `${COLLECTION_PREFIX}${value}${sortParam}`;
+      start(() => {
+        router.push(target, { scroll: false });
+      });
+    },
+    [activeSort, router],
+  );
+
+  const updateSort = useCallback(
+    (value: string) => {
       const next = new URLSearchParams(params.toString());
-      if (value === defaultValue) next.delete(key);
-      else next.set(key, value);
+      if (value === "best-sellers") next.delete("sort");
+      else next.set("sort", value);
       const qs = next.toString();
       start(() => {
         router.replace(qs ? `?${qs}` : "?", { scroll: false });
@@ -53,7 +71,7 @@ export function ShopFilters({ resultsCount }: Props) {
                 key={c.value}
                 type="button"
                 aria-pressed={active}
-                onClick={() => update("category", c.value, "all")}
+                onClick={() => navigateToCategory(c.value)}
                 className={cn(
                   "min-h-[40px] px-3 sm:px-4 font-mono font-bold text-[10px] tracking-[.20em] uppercase border motion-safe:transition-colors motion-safe:duration-150 focus-visible:outline-2 focus-visible:outline-offset-3 focus-visible:outline-brass-500",
                   active
@@ -74,7 +92,7 @@ export function ShopFilters({ resultsCount }: Props) {
             </span>
             <select
               value={activeSort}
-              onChange={(e) => update("sort", e.target.value, "best-sellers")}
+              onChange={(e) => updateSort(e.target.value)}
               className="bg-bone-50 border border-combat-900 text-combat-900 font-mono font-bold text-[11px] tracking-[.20em] uppercase px-3 py-2 min-h-[40px] focus:outline-none focus:border-brass-500 focus-visible:ring-2 focus-visible:ring-brass-500"
             >
               {SORT_OPTIONS.map((o) => (

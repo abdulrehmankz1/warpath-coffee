@@ -44,7 +44,7 @@ export function AuthField({
           {required && (
             <span
               aria-hidden="true"
-              className="bg-brass-500 text-combat-900 font-mono text-[8px] tracking-[.20em] px-1.5 py-0.5"
+              className="border border-alert-red text-alert-red font-mono text-[8px] tracking-[.20em] px-1.5 py-[1px]"
             >
               REQ
             </span>

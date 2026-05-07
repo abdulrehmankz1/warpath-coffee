@@ -2,7 +2,7 @@ import Link from "next/link";
 import Image from "next/image";
 import type { ReactNode } from "react";
 import { Star } from "lucide-react";
-import { BRAND, FLAGSHIP, formatReviewCount } from "@/lib/data/warpath";
+import { BRAND, REVIEW_TOTALS, formatReviewCount } from "@/lib/data/warpath";
 import { SectionBadge } from "./SectionBadge";
 import { IntakeCard } from "./IntakeCard";
 
@@ -46,7 +46,10 @@ export function AuthShell({
       <span className="absolute bottom-0 right-0 w-16 h-16 sm:w-24 sm:h-24 border-b-[3px] border-r-[3px] border-brass-500" aria-hidden="true" />
 
       <div className="relative mx-auto max-w-[1280px] px-4 sm:px-6 md:px-12 lg:px-16 py-12 sm:py-16 lg:py-20 grid lg:grid-cols-[5fr_7fr] gap-10 lg:gap-16 items-start">
-        {/* Left: brand panel */}
+        {/* Left: brand panel — desktop only.
+            On mobile this aside is hidden and the same content is rendered inside the form card.
+            We keep the H1 in the mobile card (since the desktop aside is removed from the a11y tree
+            via display:none), so semantic hierarchy stays correct on every breakpoint. */}
         <aside className="hidden lg:flex flex-col justify-between min-h-[560px]">
           <div>
             <Link
@@ -54,7 +57,13 @@ export function AuthShell({
               className="inline-flex items-center gap-3 mb-10 focus-visible:outline-2 focus-visible:outline-offset-3 focus-visible:outline-brass-500"
               aria-label={`${BRAND.name} home`}
             >
-              <Image src="/logo.avif" alt="" width={48} height={48} className="h-12 w-auto" />
+              <Image
+                src="/logo.avif"
+                alt=""
+                width={48}
+                height={48}
+                className="h-12 w-12"
+              />
               <span className="font-display font-black text-2xl uppercase leading-none">
                 {BRAND.name.split(" ")[0]}
                 <span className="block font-mono text-[9px] tracking-[.28em] mt-1 font-semibold text-brass-400">
@@ -76,7 +85,7 @@ export function AuthShell({
             <ul className="mt-10 grid grid-cols-3 gap-3 max-w-[440px]">
               {[
                 { v: "Veteran", k: "Owned" },
-                { v: "4.9 ★", k: `${formatReviewCount((FLAGSHIP.reviews ?? 0) + 3786)}+ Reviews` },
+                { v: "4.9 ★", k: `${formatReviewCount(REVIEW_TOTALS.total)}+ Reviews` },
                 { v: "No", k: "Lock-In" },
               ].map((s) => (
                 <li
@@ -126,7 +135,9 @@ export function AuthShell({
             </>
           }
         >
-          {/* Mobile-only title block (lg-aside is hidden under lg) */}
+          {/* Mobile-only title block — uses h1 because the desktop aside is display:none here.
+              At lg+ the aside h1 is rendered and this block is removed via lg:hidden. The two
+              h1 nodes never coexist in the same a11y tree. */}
           <div className="lg:hidden mb-7">
             <SectionBadge label={opCode} tone="dark" className="mb-5" />
             <h1
@@ -135,13 +146,10 @@ export function AuthShell({
             >
               {title}
             </h1>
-            <p className="mt-4 text-[14px] leading-[1.55] text-cream-50/70">
+            <p className="mt-4 text-[16px] leading-[1.55] text-cream-50/70">
               {subtitle}
             </p>
           </div>
-          <h2 className="sr-only" id="auth-form-heading">
-            Form
-          </h2>
           {children}
         </IntakeCard>
       </div>

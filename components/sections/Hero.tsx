@@ -4,6 +4,7 @@ import { Coords } from "@/components/warpath/Coords";
 import {
   FLAGSHIP,
   HERO,
+  REVIEW_TOTALS,
   formatReviewCount,
 } from "@/lib/data/warpath";
 
@@ -19,8 +20,20 @@ export function Hero() {
         aria-hidden="true"
       >
         <div className="font-display font-black text-[120px] sm:text-[160px] lg:text-[200px] leading-[0.8] tracking-[-.04em] uppercase whitespace-nowrap text-brass-500/[0.05] flex motion-safe:animate-[marquee_60s_linear_infinite] gap-16">
-          <span>WARPATH · <em className="not-italic font-normal text-brass-500/[0.18]">drink it black</em> · WARPATH ·</span>
-          <span>WARPATH · <em className="not-italic font-normal text-brass-500/[0.18]">drink it black</em> · WARPATH ·</span>
+          <span>
+            WARPATH ·{" "}
+            <em className="not-italic font-normal text-brass-500/[0.18]">
+              drink it black
+            </em>{" "}
+            · WARPATH ·
+          </span>
+          <span>
+            WARPATH ·{" "}
+            <em className="not-italic font-normal text-brass-500/[0.18]">
+              drink it black
+            </em>{" "}
+            · WARPATH ·
+          </span>
         </div>
       </div>
 
@@ -69,16 +82,16 @@ export function Hero() {
             </p>
 
             {/* Subhead */}
-            <p className="mt-5 sm:mt-6 max-w-[52ch] text-[15px] sm:text-[16px] lg:text-[17px] leading-[1.65] text-cream-50/70">
+            <p className="mt-5 sm:mt-6 max-w-[52ch] text-[16px] sm:text-[16px] lg:text-[17px] leading-[1.65] text-cream-50/70">
               {HERO.subhead}
             </p>
 
             {/* Social proof line */}
-            {FLAGSHIP.reviews && (
+            {REVIEW_TOTALS.total > 0 && (
               <div className="mt-5 flex items-center gap-3 font-mono text-[11px] sm:text-xs tracking-[.18em] uppercase text-brass-400 font-bold">
                 <span aria-hidden="true">★★★★★</span>
                 <span>
-                  {formatReviewCount(FLAGSHIP.reviews)} verified reviews
+                  {formatReviewCount(REVIEW_TOTALS.total)}+ verified reviews
                 </span>
               </div>
             )}

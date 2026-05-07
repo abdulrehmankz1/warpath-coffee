@@ -60,8 +60,12 @@ export function SectionHeader({
 
     const ctx = gsap.context(() => {
       const ease = "power3.out";
+      // immediateRender:false means GSAP does NOT pre-apply opacity:0 / transforms
+      // to the DOM until the ScrollTrigger fires. If the trigger never fires
+      // (e.g. screenshot tools, missing IO support, or detached refs), elements
+      // stay at their natural opacity:1 — no more invisible sections.
       const tl = gsap.timeline({
-        defaults: { ease, duration: 0.85 },
+        defaults: { ease, duration: 0.85, immediateRender: false },
         scrollTrigger: {
           trigger: root,
           start: "top 82%",
@@ -69,28 +73,32 @@ export function SectionHeader({
         },
       });
 
-      tl.from('[data-anim="badge"]', {
-        opacity: 0,
-        x: -16,
-        duration: 0.55,
-      });
-      tl.from(
-        '[data-anim="rule"]',
-        {
-          scaleX: 0,
-          transformOrigin: "left center",
-          duration: 0.6,
-          ease: "power2.out",
-        },
-        "-=0.25",
-      );
-      tl.from(
-        '[data-anim="eyebrow"]',
-        { opacity: 0, x: -10, duration: 0.5 },
-        "-=0.4",
-      );
-
+      const badge = root.querySelectorAll('[data-anim="badge"]');
+      const rule = root.querySelectorAll('[data-anim="rule"]');
+      const eyebrow = root.querySelectorAll('[data-anim="eyebrow"]');
+      const desc = root.querySelectorAll('[data-anim="desc"]');
       const lines = root.querySelectorAll('[data-anim="line"]');
+      const titleEl = root.querySelectorAll('[data-anim="title"]');
+
+      if (badge.length) {
+        tl.from(badge, { opacity: 0, x: -16, duration: 0.55 });
+      }
+      if (rule.length) {
+        tl.from(
+          rule,
+          {
+            scaleX: 0,
+            transformOrigin: "left center",
+            duration: 0.6,
+            ease: "power2.out",
+          },
+          "-=0.25",
+        );
+      }
+      if (eyebrow.length) {
+        tl.from(eyebrow, { opacity: 0, x: -10, duration: 0.5 }, "-=0.4");
+      }
+
       if (lines.length) {
         tl.from(
           lines,
@@ -103,18 +111,12 @@ export function SectionHeader({
           },
           "-=0.45",
         );
-      } else {
-        tl.from(
-          '[data-anim="title"]',
-          { opacity: 0, y: 28, duration: 0.85 },
-          "-=0.45",
-        );
+      } else if (titleEl.length) {
+        tl.from(titleEl, { opacity: 0, y: 28, duration: 0.85 }, "-=0.45");
       }
-      tl.from(
-        '[data-anim="desc"]',
-        { opacity: 0, y: 16, duration: 0.6 },
-        "-=0.55",
-      );
+      if (desc.length) {
+        tl.from(desc, { opacity: 0, y: 16, duration: 0.6 }, "-=0.55");
+      }
     }, root);
 
     return () => {
@@ -123,7 +125,9 @@ export function SectionHeader({
   }, []);
 
   const titleColor = tone === "dark" ? "text-cream-50" : "text-combat-900";
-  const eyebrowColor = tone === "dark" ? "text-brass-400" : "text-brass-600";
+  // brass-700 (#7A5C20) hits 5.5:1 on bone backgrounds — passes AA for normal text.
+  // brass-600 was 3.3:1 (only AA-Large). Eyebrows are 11px so must hit 4.5:1.
+  const eyebrowColor = tone === "dark" ? "text-brass-400" : "text-brass-700";
   const descColor = tone === "dark" ? "text-cream-50/72" : "text-ash-600";
 
   const secLabel = cleanSecLabel(sec);

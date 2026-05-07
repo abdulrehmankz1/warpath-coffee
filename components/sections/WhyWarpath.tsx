@@ -20,7 +20,7 @@ export function WhyWarpath() {
           title={
             <span id="why-headline">
               Built for the cup that{" "}
-              <em className="not-italic text-brass-500 normal-case">earns</em>{" "}
+              <em className="not-italic text-brass-500">earns</em>{" "}
               daily duty.
             </span>
           }
@@ -60,9 +60,7 @@ export function WhyWarpath() {
                 </div>
                 <div className="font-display font-black uppercase tracking-[-0.018em] leading-[0.95] text-[clamp(1.4rem,2.2vw,2rem)] text-cream-50">
                   We don’t burn{" "}
-                  <em className="not-italic text-brass-500 normal-case">
-                    our beans.
-                  </em>
+                  <em className="not-italic text-brass-500">our beans.</em>
                 </div>
                 <p className="mt-2 sm:mt-3 max-w-[42ch] text-[13px] sm:text-[14px] leading-[1.55] text-cream-50/75">
                   Custom-developed roast profiles, dialed in to keep the cup smooth — never bitter, never acidic.
@@ -108,10 +106,10 @@ export function WhyWarpath() {
                       <div className="font-mono text-[9px] sm:text-[10px] font-bold tracking-[.22em] sm:tracking-[.24em] uppercase text-brass-700 mb-1.5">
                         SPEC · 0{i + 1} · {s.code}
                       </div>
-                      <h3 className="font-stencil font-extrabold text-[18px] sm:text-[20px] lg:text-[22px] uppercase tracking-[0.01em] text-combat-900 leading-tight mb-1.5 sm:mb-2">
+                      <h3 className="font-display font-black text-[18px] sm:text-[20px] lg:text-[22px] uppercase tracking-[0.01em] text-combat-900 leading-tight mb-1.5 sm:mb-2">
                         {s.title}
                       </h3>
-                      <p className="text-[13.5px] sm:text-[14px] lg:text-[14.5px] text-ash-700 leading-[1.55] sm:leading-[1.6] max-w-[52ch]">
+                      <p className="text-[16px] sm:text-[16px] lg:text-[16.5px] text-ash-700 leading-[1.55] sm:leading-[1.6] max-w-[52ch]">
                         {s.body}
                       </p>
                     </div>
@@ -136,7 +134,7 @@ export function WhyWarpath() {
               <Button
                 variant="ghost"
                 size="base"
-                href="/about-warpath-coffee"
+                href="/about"
                 opCode="OP-WHY"
                 data-event="why_learn_more"
               >

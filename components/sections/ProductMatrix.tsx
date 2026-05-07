@@ -26,9 +26,7 @@ export function ProductMatrix() {
             title={
               <span id="matrix-headline">
                 Every roast,{" "}
-                <em className="not-italic text-brass-500 normal-case">
-                  one mission.
-                </em>
+                <em className="not-italic text-brass-500">one mission.</em>
               </span>
             }
             desc="Smooth, low-acid coffee — blends, decaf, K-cups, and gear. Pick your weapon, deploy when ready."

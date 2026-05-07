@@ -7,9 +7,11 @@ import { SiteFooter } from "@/components/sections/SiteFooter";
 import { Breadcrumbs } from "@/components/warpath/Breadcrumbs";
 import { ProductCard } from "@/components/warpath/ProductCard";
 import { PdpBuyBox } from "@/components/warpath/PdpBuyBox";
+import { Star } from "lucide-react";
 import {
   PRODUCTS,
   getProductBySlug,
+  getReviewsForSlug,
   formatReviewCount,
 } from "@/lib/data/warpath";
 
@@ -47,6 +49,8 @@ export default async function ProductPage({ params }: { params: Params }) {
   const crossSell = PRODUCTS.filter(
     (p) => p.slug !== product.slug && p.category !== product.category,
   ).slice(0, 4);
+
+  const productReviews = getReviewsForSlug(product.slug, 4);
 
   const productJsonLd = {
     "@context": "https://schema.org",
@@ -278,29 +282,84 @@ export default async function ProductPage({ params }: { params: Params }) {
           </section>
         )}
 
-        {/* Reviews stub — links to homepage reviews carousel */}
+        {/* Product-specific reviews */}
         <section
           id="reviews"
           aria-labelledby="reviews-heading"
           className="bg-combat-900 text-cream-50 py-14 sm:py-16 lg:py-20"
         >
-          <div className="mx-auto max-w-[1440px] px-4 sm:px-6 md:px-12 lg:px-[90px] grid lg:grid-cols-[8fr_4fr] gap-8 lg:gap-12 items-end">
-            <div>
-              <div className="font-mono font-bold text-[10px] tracking-[.32em] uppercase text-brass-500 mb-3">
-                Field Reports
+          <div className="mx-auto max-w-[1440px] px-4 sm:px-6 md:px-12 lg:px-[90px]">
+            <div className="grid lg:grid-cols-[8fr_4fr] gap-6 lg:gap-12 items-end mb-8 sm:mb-10">
+              <div>
+                <div className="font-mono font-bold text-[10px] tracking-[.32em] uppercase text-brass-500 mb-3">
+                  Field Reports
+                </div>
+                <h2
+                  id="reviews-heading"
+                  className="font-display font-black uppercase leading-[1.0] tracking-[-0.022em] text-[clamp(1.875rem,4vw,3rem)] text-cream-50"
+                >
+                  Verified buyers, real cups.
+                </h2>
+                {product.reviews && (
+                  <p className="mt-4 max-w-[58ch] text-[16px] leading-[1.6] text-cream-50/72">
+                    {formatReviewCount(product.reviews)} verified reviews on this SKU. Average rating{" "}
+                    {(product.rating ?? 4.9).toFixed(1)} stars.
+                  </p>
+                )}
               </div>
-              <h2
-                id="reviews-heading"
-                className="font-display font-black uppercase leading-[1.0] tracking-[-0.022em] text-[clamp(1.875rem,4vw,3rem)] text-cream-50"
-              >
-                Verified buyers, real cups.
-              </h2>
-              {product.reviews && (
-                <p className="mt-4 max-w-[58ch] text-[15px] sm:text-[16px] leading-[1.6] text-cream-50/72">
-                  {formatReviewCount(product.reviews)} verified reviews on this SKU. Average rating {(product.rating ?? 4.9).toFixed(1)} stars. Read all reviews on the home page Field Reports section.
-                </p>
-              )}
+              <div className="lg:text-right">
+                <a
+                  href="/reviews"
+                  className="inline-flex items-center gap-2 font-mono font-bold text-[11px] tracking-[.22em] uppercase text-brass-400 hover:text-brass-300 focus-visible:outline-2 focus-visible:outline-offset-3 focus-visible:outline-brass-500"
+                  data-event="pdp_reviews_view_all"
+                >
+                  Read all reviews →
+                </a>
+              </div>
             </div>
+
+            {productReviews.length > 0 && (
+              <ul className="grid sm:grid-cols-2 lg:grid-cols-4 gap-4 sm:gap-5">
+                {productReviews.map((r) => (
+                  <li
+                    key={r.code}
+                    className="bg-combat-800/60 border border-brass-500/30 grid grid-rows-[auto_1fr_auto]"
+                  >
+                    <div className="px-4 sm:px-5 py-3 border-b border-dashed border-brass-500/30 flex items-center justify-between font-mono font-bold text-[10px] tracking-[.20em] uppercase text-brass-400">
+                      <span>{r.code}</span>
+                      <span className="inline-flex items-center gap-0.5 text-brass-500">
+                        {[0, 1, 2, 3, 4].map((j) => (
+                          <Star
+                            key={j}
+                            size={11}
+                            strokeWidth={1.4}
+                            className={j < r.rating ? "fill-brass-500" : ""}
+                            aria-hidden="true"
+                          />
+                        ))}
+                      </span>
+                    </div>
+                    <blockquote className="px-4 sm:px-5 pt-5 pb-4">
+                      <div className="font-mono text-[9px] tracking-[.20em] uppercase text-brass-400 font-bold mb-3">
+                        {r.product}
+                      </div>
+                      <p className="italic text-[16px] leading-[1.55] text-cream-50">
+                        “{r.quote}”
+                      </p>
+                    </blockquote>
+                    <figcaption className="px-4 sm:px-5 py-3 border-t border-dashed border-brass-500/30 bg-combat-900/40 grid grid-cols-[1fr_auto] gap-2 items-center font-mono font-bold text-[10px] tracking-[.18em] uppercase text-cream-50/72">
+                      <div className="flex flex-col min-w-0">
+                        <span className="truncate">— {r.name}</span>
+                        <span className="text-[9px] text-cream-50/50 mt-0.5 tracking-[.18em] truncate">
+                          {r.role}
+                        </span>
+                      </div>
+                      <span className="text-brass-400 text-[9px]">{r.date}</span>
+                    </figcaption>
+                  </li>
+                ))}
+              </ul>
+            )}
           </div>
         </section>
       </main>
