@@ -61,7 +61,7 @@ export function StickyBuyBar(props: Props) {
             data-event="cart_add_sticky"
           >
             <ShoppingBag size={14} strokeWidth={1.8} aria-hidden="true" className="-ml-0.5 mr-1.5" />
-            {props.soldOut ? "Sold Out" : "Add"}
+            {props.soldOut ? "Sold Out" : `Add to Cart · ${formatUsd(props.price * props.quantity)}`}
           </BladeButton>
         </div>
       </div>

@@ -4,9 +4,11 @@ import Image from "next/image";
 import Link from "next/link";
 import { usePathname } from "next/navigation";
 import { useEffect, useState } from "react";
-import { Menu, ShoppingBag, X } from "lucide-react";
+import { Menu, Search, ShoppingBag, X } from "lucide-react";
 import { cn } from "@/lib/cn";
 import { Button } from "./Button";
+import { useCart } from "@/lib/cart/CartProvider";
+import { useSearch } from "@/lib/search/SearchProvider";
 import { NAV_PRIMARY, BRAND, HERO } from "@/lib/data/warpath";
 
 const isActive = (pathname: string, href: string) => {
@@ -18,6 +20,10 @@ export function SiteHeader() {
   const pathname = usePathname() ?? "/";
   const [scrolled, setScrolled] = useState(false);
   const [open, setOpen] = useState(false);
+  const { totals, openCart } = useCart();
+  const { openSearch } = useSearch();
+  const cartCount = totals.itemCount;
+  const cartLabel = `View cart, ${cartCount} item${cartCount === 1 ? "" : "s"}`;
 
   useEffect(() => {
     const onScroll = () => setScrolled(window.scrollY > 80);
@@ -52,10 +58,10 @@ export function SiteHeader() {
 
       <header
         className={cn(
-          "sticky top-0 z-50 transition-colors duration-200",
+          "sticky top-0 z-50 bg-combat-900 transition-shadow duration-200",
           scrolled
-            ? "bg-bone-100/95 backdrop-blur-md border-b border-canvas-300 shadow-[0_1px_0_var(--color-brass-500)]"
-            : "bg-combat-900"
+            ? "shadow-[0_1px_0_var(--color-brass-500)] border-b border-brass-500/20"
+            : "border-b border-transparent"
         )}
       >
         <div className="mx-auto max-w-[1440px] px-4 sm:px-6 md:px-12 lg:px-[90px]">
@@ -63,37 +69,18 @@ export function SiteHeader() {
             {/* Brand */}
             <Link
               href="/"
-              className={cn(
-                "flex items-center gap-2 sm:gap-3 pr-4 sm:pr-8 sm:border-r focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-brass-500",
-                scrolled ? "border-combat-900" : "border-brass-500"
-              )}
+              className="flex items-center pr-4 sm:pr-8 focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-brass-500"
               data-event="nav_brand"
               aria-label={`${BRAND.name} home`}
             >
               <Image
                 src="/logo.avif"
-                alt=""
-                width={40}
-                height={40}
+                alt={`${BRAND.name} logo`}
+                width={64}
+                height={64}
                 priority
-                className="h-8 sm:h-10 w-auto"
+                className="h-12 w-auto sm:h-14"
               />
-              <span
-                className={cn(
-                  "font-display font-black text-[18px] sm:text-[22px] uppercase leading-none tracking-[-0.01em]",
-                  scrolled ? "text-combat-900" : "text-cream-50"
-                )}
-              >
-                {BRAND.name.split(" ")[0]}
-                <span
-                  className={cn(
-                    "block font-mono text-[8px] sm:text-[9px] tracking-[.24em] sm:tracking-[.28em] mt-0.5 font-semibold",
-                    scrolled ? "text-brass-700" : "text-brass-400"
-                  )}
-                >
-                  {BRAND.shortTag}
-                </span>
-              </span>
             </Link>
 
             {/* Nav */}
@@ -112,12 +99,8 @@ export function SiteHeader() {
                       "relative font-mono text-xs tracking-[.18em] uppercase motion-safe:transition-colors motion-safe:duration-150 focus-visible:outline-2 focus-visible:outline-offset-4 focus-visible:outline-brass-500 group",
                       active ? "font-bold" : "font-semibold",
                       active
-                        ? scrolled
-                          ? "text-brass-700"
-                          : "text-brass-400"
-                        : scrolled
-                          ? "text-combat-900 hover:text-brass-700"
-                          : "text-cream-50 hover:text-brass-400",
+                        ? "text-brass-400"
+                        : "text-cream-50 hover:text-brass-400",
                     )}
                     data-event="nav_link"
                   >
@@ -138,38 +121,75 @@ export function SiteHeader() {
 
             {/* Actions */}
             <div className="flex items-center gap-1 sm:gap-3">
+              {/* Search trigger — desktop pill */}
+              <button
+                type="button"
+                onClick={openSearch}
+                aria-label="Search products"
+                className="hidden md:inline-flex items-center gap-2 min-h-[40px] px-3 lg:px-4 font-mono font-semibold text-[11px] tracking-[.20em] uppercase border border-brass-500/40 text-cream-50 hover:bg-brass-500 hover:text-combat-900 hover:border-brass-500 motion-safe:transition-colors motion-safe:duration-150 focus-visible:outline-2 focus-visible:outline-offset-3 focus-visible:outline-brass-500"
+                data-event="nav_search"
+              >
+                <Search size={14} strokeWidth={1.8} aria-hidden="true" />
+                <span className="hidden lg:inline">Search</span>
+                <span
+                  className="hidden xl:inline-flex items-center gap-1 ml-1 pl-2 border-l border-brass-500/30 text-brass-400/70 text-[9px] tracking-[.18em]"
+                  aria-hidden="true"
+                >
+                  <kbd className="px-1 py-0.5 border border-current font-bold">⌘K</kbd>
+                </span>
+              </button>
+              {/* Mobile-only icon search trigger */}
+              <button
+                type="button"
+                onClick={openSearch}
+                aria-label="Search products"
+                className="md:hidden inline-flex items-center justify-center min-w-[44px] min-h-[44px] text-cream-50 hover:text-brass-400 motion-safe:transition-colors motion-safe:duration-150 focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-brass-500"
+                data-event="nav_search_mobile"
+              >
+                <Search size={18} strokeWidth={1.6} aria-hidden="true" />
+              </button>
               <Link
                 href="/login"
-                className={cn(
-                  "hidden md:inline-flex items-center min-h-[44px] px-2 font-mono font-semibold text-[11px] tracking-[.20em] uppercase motion-safe:transition-colors motion-safe:duration-150 focus-visible:outline-2 focus-visible:outline-offset-3 focus-visible:outline-brass-500",
-                  scrolled ? "text-combat-900 hover:text-brass-700" : "text-cream-50 hover:text-brass-400",
-                )}
+                className="hidden md:inline-flex items-center min-h-[44px] px-2 font-mono font-semibold text-[11px] tracking-[.20em] uppercase text-cream-50 hover:text-brass-400 motion-safe:transition-colors motion-safe:duration-150 focus-visible:outline-2 focus-visible:outline-offset-3 focus-visible:outline-brass-500"
                 data-event="nav_signin"
               >
                 Sign In
               </Link>
-              {/* Mobile-only icon-style cart fallback (matches drawer button) */}
-              <Link
-                href="/cart"
-                aria-label="View cart, 0 items"
-                className={cn(
-                  "md:hidden inline-flex items-center justify-center min-w-[44px] min-h-[44px] motion-safe:transition-colors motion-safe:duration-150 focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-brass-500",
-                  scrolled ? "text-combat-900 hover:text-brass-700" : "text-cream-50 hover:text-brass-400"
-                )}
+              {/* Mobile-only icon-style cart trigger */}
+              <button
+                type="button"
+                onClick={openCart}
+                aria-label={cartLabel}
+                className="md:hidden relative inline-flex items-center justify-center min-w-[44px] min-h-[44px] text-cream-50 hover:text-brass-400 motion-safe:transition-colors motion-safe:duration-150 focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-brass-500"
                 data-event="nav_cart"
               >
                 <ShoppingBag size={18} strokeWidth={1.6} aria-hidden="true" />
-              </Link>
+                {cartCount > 0 && (
+                  <span
+                    aria-hidden="true"
+                    className="absolute -top-0.5 -right-0.5 min-w-[18px] h-[18px] px-1 inline-flex items-center justify-center bg-brass-500 text-combat-900 font-mono font-bold text-[10px] tracking-[.04em] tabular-nums leading-none"
+                  >
+                    {cartCount}
+                  </span>
+                )}
+              </button>
 
-              {/* Primary brass CTA — now Cart instead of Shop Coffee */}
+              {/* Primary brass CTA — opens cart drawer */}
               <div className="hidden md:block py-2 sm:py-3">
-                <Button
-                  variant="brass"
-                  size="sm"
-                  href="/cart"
+                <button
+                  type="button"
+                  onClick={openCart}
                   data-event="nav_cart_cta"
-                  aria-label="View cart, 0 items"
-                  className="group"
+                  aria-label={cartLabel}
+                  className={cn(
+                    "group relative inline-flex items-center justify-center font-mono font-bold uppercase rounded-none border-0 cursor-pointer",
+                    "transition-[background-color,color,box-shadow,transform] duration-300 ease-[cubic-bezier(0.16,1,0.3,1)] will-change-transform",
+                    "motion-safe:hover:-translate-y-[1px] active:translate-y-0 active:scale-[0.985]",
+                    "focus-visible:outline-2 focus-visible:outline-offset-3 focus-visible:outline-brass-500",
+                    "px-5 py-3.5 min-h-[44px] text-[10px] tracking-[.20em] gap-2 pr-8",
+                    "[clip-path:polygon(0_0,calc(100%_-_16px)_0,100%_50%,calc(100%_-_16px)_100%,0_100%)]",
+                    "bg-brass-500 text-combat-900 hover:bg-combat-900 hover:text-brass-400 hover:shadow-[inset_0_0_0_2px_var(--color-brass-500)]"
+                  )}
                 >
                   <ShoppingBag
                     size={15}
@@ -177,8 +197,8 @@ export function SiteHeader() {
                     aria-hidden="true"
                     className="motion-safe:transition-transform motion-safe:duration-300 motion-safe:group-hover:-translate-y-0.5 motion-safe:group-hover:rotate-[-6deg] -ml-1 mr-2"
                   />
-                  Cart · 0
-                </Button>
+                  Cart · {cartCount}
+                </button>
               </div>
               <button
                 type="button"
@@ -186,10 +206,7 @@ export function SiteHeader() {
                 aria-expanded={open}
                 aria-controls="mobile-drawer"
                 onClick={() => setOpen(true)}
-                className={cn(
-                  "lg:hidden inline-flex items-center justify-center min-w-[44px] min-h-[44px] focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-brass-500",
-                  scrolled ? "text-combat-900" : "text-cream-50"
-                )}
+                className="lg:hidden inline-flex items-center justify-center min-w-[44px] min-h-[44px] text-cream-50 focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-brass-500"
               >
                 <Menu size={22} strokeWidth={1.8} aria-hidden="true" />
               </button>
@@ -221,6 +238,23 @@ export function SiteHeader() {
             </button>
           </div>
           <nav className="flex-1 px-4 sm:px-6 py-8 sm:py-10 flex flex-col gap-5 sm:gap-6 overflow-y-auto" aria-label="Mobile primary">
+            <button
+              type="button"
+              onClick={() => {
+                setOpen(false);
+                openSearch();
+              }}
+              className="flex items-center gap-3 sm:gap-4 px-4 py-3.5 border border-brass-500/40 text-cream-50 hover:bg-brass-500 hover:text-combat-900 hover:border-brass-500 motion-safe:transition-colors motion-safe:duration-200 focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-brass-500 -mt-2"
+              data-event="nav_search_drawer"
+            >
+              <Search size={18} strokeWidth={1.6} aria-hidden="true" />
+              <span className="font-mono font-bold text-[12px] tracking-[.22em] uppercase">
+                Search products
+              </span>
+              <span className="ml-auto font-mono text-[10px] tracking-[.18em] uppercase text-brass-400 group-hover:text-combat-900/70">
+                Open →
+              </span>
+            </button>
             {NAV_PRIMARY.map((l, i) => {
               const active = isActive(pathname, l.href);
               return (
@@ -256,17 +290,22 @@ export function SiteHeader() {
                 </Link>
               );
             })}
-            <Link
-              href="/cart"
-              onClick={() => setOpen(false)}
-              className="font-stencil font-extrabold text-2xl sm:text-3xl uppercase tracking-[.02em] hover:text-brass-400 focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-brass-500 transition-colors flex items-center gap-3 sm:gap-4 mt-2"
+            <button
+              type="button"
+              onClick={() => {
+                setOpen(false);
+                openCart();
+              }}
+              className="font-stencil font-extrabold text-2xl sm:text-3xl uppercase tracking-[.02em] text-cream-50 hover:text-brass-400 focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-brass-500 transition-colors flex items-center gap-3 sm:gap-4 mt-2 text-left w-full"
             >
               <span className="font-mono text-[11px] text-brass-400 tracking-[.22em] w-8 sm:w-10">
                 0{NAV_PRIMARY.length + 1}
               </span>
               Cart
-              <span className="ml-auto font-mono text-[10px] tracking-[.22em] text-brass-400">0 items</span>
-            </Link>
+              <span className="ml-auto font-mono text-[10px] tracking-[.22em] text-brass-400">
+                {cartCount} item{cartCount === 1 ? "" : "s"}
+              </span>
+            </button>
           </nav>
           <div className="px-4 sm:px-6 pb-8 sm:pb-10 pt-5 sm:pt-6 border-t border-brass-500/30 flex flex-col gap-3 sm:gap-4">
             <Button variant="brass" size="lg" href={HERO.primaryCta.href} opCode="OP-SHOP" className="w-full">

@@ -7,16 +7,42 @@ import { cn } from "@/lib/cn";
 import { formatUsd, formatReviewCount } from "@/lib/data/warpath";
 import type { Product } from "@/lib/data/warpath";
 import { BladeButton } from "./BladeButton";
+import { useCart } from "@/lib/cart/CartProvider";
 
 type Props = {
   product: Product;
   /** Triggered by the in-card "Add to Cart" button (stub until cart wired) */
   onAddToCart?: (slug: string) => void;
   className?: string;
+  /** Hint to Next/Image: this card's image is above the fold (first row of the grid). */
+  priority?: boolean;
 };
 
-export function ProductCard({ product, onAddToCart, className }: Props) {
+export function ProductCard({ product, onAddToCart, className, priority }: Props) {
   const out = !!product.outOfStock;
+  const { addItem } = useCart();
+  const handleAdd = () => {
+    if (out) return;
+    if (onAddToCart) {
+      onAddToCart(product.slug);
+      return;
+    }
+    addItem({
+      product: {
+        slug: product.slug,
+        name: product.name,
+        image: product.image,
+        href: product.href,
+        priceUsd: product.priceUsd,
+        category: product.category,
+      },
+      qty: 1,
+      // For coffee/decaf the buyer is doing a quick-add — default 12oz / Ground
+      ...(product.category === "coffee" || product.category === "decaf"
+        ? { size: "12oz" as const, grind: "ground" as const }
+        : {}),
+    });
+  };
   return (
     <article
       data-testid="product-card"
@@ -39,6 +65,7 @@ export function ProductCard({ product, onAddToCart, className }: Props) {
           alt={product.name}
           fill
           sizes="(max-width: 640px) 100vw, (max-width: 1024px) 50vw, (max-width: 1280px) 33vw, 25vw"
+          priority={priority}
           className={cn(
             "object-cover object-center motion-safe:transition-transform motion-safe:duration-[700ms] motion-safe:ease-[cubic-bezier(0.16,1,0.3,1)] motion-safe:group-hover:scale-[1.05]",
             out && "grayscale-[60%]",
@@ -120,7 +147,7 @@ export function ProductCard({ product, onAddToCart, className }: Props) {
             <BladeButton
               variant="primary"
               size="sm"
-              onClick={() => onAddToCart?.(product.slug)}
+              onClick={handleAdd}
               data-event="cart_add"
               data-event-product={product.slug}
               data-testid="product-card-add-to-cart"

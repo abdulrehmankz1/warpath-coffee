@@ -7,6 +7,7 @@ import { BladeButton } from "./BladeButton";
 import { QuantityStepper } from "./QuantityStepper";
 import { VariantSelector, type VariantOption } from "./VariantSelector";
 import { StickyBuyBar } from "./StickyBuyBar";
+import { useCart } from "@/lib/cart/CartProvider";
 import {
   formatUsd,
   formatReviewCount,
@@ -35,6 +36,7 @@ export function PdpBuyBox({ product }: Props) {
   const [qty, setQty] = useState(1);
   const [stickyVisible, setStickyVisible] = useState(false);
   const inlineCtaRef = useRef<HTMLDivElement | null>(null);
+  const { addItem } = useCart();
 
   // 2lb adds a $20 premium
   const effectivePrice = useMemo(() => {
@@ -63,12 +65,20 @@ export function PdpBuyBox({ product }: Props) {
   }, []);
 
   const onAdd = () => {
-    // Wire to cart action when ready
-    console.log("[cart] add", {
-      slug: product.slug,
+    if (product.outOfStock) return;
+    addItem({
+      product: {
+        slug: product.slug,
+        name: product.name,
+        image: product.image,
+        href: product.href,
+        priceUsd: product.priceUsd,
+        category: product.category,
+      },
       qty,
-      grind: isCoffee ? grind : null,
-      size: isCoffee ? size : null,
+      grind: isCoffee ? (grind as "ground" | "whole-bean") : undefined,
+      size: isCoffee ? (size as "12oz" | "2lb") : undefined,
+      unitPriceUsd: effectivePrice,
     });
   };
 

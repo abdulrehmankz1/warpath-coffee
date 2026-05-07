@@ -8,12 +8,17 @@ import {
 } from "next/font/google";
 import "./globals.css";
 import { WelcomeModal } from "@/components/warpath/WelcomeModal";
+import { CartProvider } from "@/lib/cart/CartProvider";
+import { CartDrawer } from "@/components/warpath/CartDrawer";
+import { SearchProvider } from "@/lib/search/SearchProvider";
+import { SearchDrawer } from "@/components/warpath/SearchDrawer";
 
 const bigShoulders = Big_Shoulders({
   variable: "--font-big-shoulders",
   subsets: ["latin"],
   weight: ["500", "600", "700", "800", "900"],
   display: "swap",
+  adjustFontFallback: false,
 });
 
 const bigShouldersStencil = Big_Shoulders_Stencil({
@@ -21,6 +26,7 @@ const bigShouldersStencil = Big_Shoulders_Stencil({
   subsets: ["latin"],
   weight: ["600", "700", "800", "900"],
   display: "swap",
+  adjustFontFallback: false,
 });
 
 const fraunces = Fraunces({
@@ -91,11 +97,18 @@ export default function RootLayout({
   return (
     <html
       lang="en"
+      data-scroll-behavior="smooth"
       className={`${bigShoulders.variable} ${bigShouldersStencil.variable} ${fraunces.variable} ${inter.variable} ${jetbrains.variable} h-full`}
     >
       <body className="min-h-full flex flex-col bg-bone-100 text-ash-800 font-body">
-        {children}
-        <WelcomeModal />
+        <CartProvider>
+          <SearchProvider>
+            {children}
+            <SearchDrawer />
+            <CartDrawer />
+            <WelcomeModal />
+          </SearchProvider>
+        </CartProvider>
       </body>
     </html>
   );
