@@ -60,6 +60,11 @@
 
 html {
   scroll-behavior: smooth;
+  /* Sticky header is 64–72px — keep anchor jumps from landing under it. */
+  scroll-padding-top: 96px;
+  /* Reserve the scrollbar gutter so locking body scroll (search drawer,
+     mobile menu, modals) doesn't shift the layout horizontally. */
+  scrollbar-gutter: stable;
   -webkit-font-smoothing: antialiased;
   -moz-osx-font-smoothing: grayscale;
 }
@@ -140,6 +145,21 @@ body {
   0%   { transform: translateY(-2px) rotate(0deg); }
   50%  { transform: translateY(0)    rotate(2deg); }
   100% { transform: translateY(-2px) rotate(0deg); }
+}
+
+@keyframes wp-slide-in-right {
+  0%   { opacity: 0; transform: translateX(24px); }
+  100% { opacity: 1; transform: translateX(0); }
+}
+
+@keyframes wp-slide-down {
+  0%   { opacity: 0; transform: translateY(-24px); }
+  100% { opacity: 1; transform: translateY(0); }
+}
+
+@keyframes fadeIn {
+  0%   { opacity: 0; }
+  100% { opacity: 1; }
 }
 
 /* Animation utilities */

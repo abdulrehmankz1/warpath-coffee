@@ -42,8 +42,11 @@ next-env.d.ts
 
 # claude code (commit shared, ignore personal/build artifacts)
 .claude/settings.local.json
+.claude/scheduled_tasks.lock
 .claude/skills/*/node_modules
 .claude/skills/*/package-lock.json
+.claude/skills/*/.temp-*
+.claude/skills/*/verify-*.js
 .claude/scripts/*.local.*
 screenshots/
 
