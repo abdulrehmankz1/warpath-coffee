@@ -20,21 +20,28 @@ export function ShopFilters({ resultsCount }: Props) {
   const params = useSearchParams();
   const [pending, start] = useTransition();
 
-  const activeCategory = pathname.startsWith(COLLECTION_PREFIX)
+  const onCollectionRoute = pathname.startsWith(COLLECTION_PREFIX);
+  const activeCategory = onCollectionRoute
     ? pathname.slice(COLLECTION_PREFIX.length).split("/")[0]
-    : "all";
+    : (params.get("category") ?? "all");
   const activeSort = params.get("sort") ?? "best-sellers";
 
   const navigateToCategory = useCallback(
     (value: string) => {
-      const sortParam = activeSort === "best-sellers" ? "" : `?sort=${activeSort}`;
-      const target =
-        value === "all" ? `/shop${sortParam}` : `${COLLECTION_PREFIX}${value}${sortParam}`;
+      const next = new URLSearchParams();
+      if (value !== "all") next.set("category", value);
+      if (activeSort !== "best-sellers") next.set("sort", activeSort);
+      const qs = next.toString();
+      const target = qs ? `/shop?${qs}` : "/shop";
       start(() => {
-        router.push(target, { scroll: false });
+        if (onCollectionRoute) {
+          router.push(target, { scroll: false });
+        } else {
+          router.replace(target, { scroll: false });
+        }
       });
     },
-    [activeSort, router],
+    [activeSort, onCollectionRoute, router],
   );
 
   const updateSort = useCallback(
