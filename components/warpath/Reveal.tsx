@@ -52,14 +52,25 @@ export function Reveal({
       setArmed(false);
       return;
     }
-    // Arm: hide and animate in on intersect
-    setArmed(true);
-    setVisible(false);
     const el = ref.current;
     if (!el) {
       setVisible(true);
       return;
     }
+    // If the element is already in the viewport at mount time (e.g. user
+    // landed via anchor link or refreshed mid-page), skip the entrance
+    // animation. Otherwise we'd flip from visible → invisible → visible,
+    // which paints as a flicker.
+    const rect = el.getBoundingClientRect();
+    const alreadyInView = rect.top < window.innerHeight && rect.bottom > 0;
+    if (alreadyInView) {
+      setVisible(true);
+      setArmed(false);
+      return;
+    }
+    // Below the fold — arm and animate in on intersect
+    setArmed(true);
+    setVisible(false);
     const obs = new IntersectionObserver(
       (entries) => {
         entries.forEach((entry) => {

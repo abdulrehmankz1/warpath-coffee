@@ -175,9 +175,9 @@ export function SiteFooter() {
             <Image
               src="/logo.avif"
               alt="Warpath Coffee logo"
-              width={96}
-              height={96}
-              className="h-16 w-16 sm:h-20 sm:w-20"
+              width={150}
+              height={94}
+              className="h-14 w-auto sm:h-20"
             />
           </Link>
           <p className="text-[16px] sm:text-[16px] leading-[1.65] text-cream-50/65 max-w-[40ch]">

@@ -57,12 +57,12 @@ export function ShopFilters({ resultsCount }: Props) {
         pending && "opacity-90",
       )}
     >
-      <div className="mx-auto max-w-[1440px] px-4 sm:px-6 md:px-12 lg:px-[90px] py-3 sm:py-4 flex items-center gap-3 sm:gap-5 flex-wrap">
-        {/* Category chips */}
+      <div className="mx-auto max-w-[1440px] px-4 sm:px-6 md:px-12 lg:px-[90px] py-3 sm:py-4 flex flex-col gap-3 sm:flex-row sm:items-center sm:gap-5 sm:flex-wrap">
+        {/* Category chips — horizontal scroll on mobile, wrap on desktop */}
         <div
           role="group"
           aria-label="Filter by category"
-          className="flex items-center gap-2 flex-wrap"
+          className="flex items-center gap-2 -mx-4 px-4 overflow-x-auto sm:mx-0 sm:px-0 sm:overflow-visible sm:flex-wrap [scrollbar-width:none] [&::-webkit-scrollbar]:hidden"
         >
           {CATEGORY_FILTERS.map((c) => {
             const active = activeCategory === c.value;
@@ -73,7 +73,7 @@ export function ShopFilters({ resultsCount }: Props) {
                 aria-pressed={active}
                 onClick={() => navigateToCategory(c.value)}
                 className={cn(
-                  "min-h-[40px] px-3 sm:px-4 font-mono font-bold text-[10px] tracking-[.20em] uppercase border motion-safe:transition-colors motion-safe:duration-150 focus-visible:outline-2 focus-visible:outline-offset-3 focus-visible:outline-brass-500",
+                  "shrink-0 min-h-[40px] px-3 sm:px-4 font-mono font-bold text-[10px] tracking-[.20em] uppercase border motion-safe:transition-colors motion-safe:duration-150 focus-visible:outline-2 focus-visible:outline-offset-3 focus-visible:outline-brass-500",
                   active
                     ? "bg-combat-900 text-brass-400 border-combat-900"
                     : "bg-bone-50 text-combat-900 border-combat-900/30 hover:border-combat-900",
@@ -85,15 +85,15 @@ export function ShopFilters({ resultsCount }: Props) {
           })}
         </div>
 
-        <div className="ml-auto flex items-center gap-3 sm:gap-4 flex-wrap">
-          <label className="inline-flex items-center gap-2">
-            <span className="font-mono font-bold text-[10px] tracking-[.20em] uppercase text-ash-600">
+        <div className="flex items-center justify-between gap-3 sm:ml-auto sm:justify-end sm:gap-4">
+          <label className="inline-flex items-center gap-2 min-w-0">
+            <span className="font-mono font-bold text-[10px] tracking-[.20em] uppercase text-ash-600 shrink-0">
               Sort
             </span>
             <select
               value={activeSort}
               onChange={(e) => updateSort(e.target.value)}
-              className="bg-bone-50 border border-combat-900 text-combat-900 font-mono font-bold text-[11px] tracking-[.20em] uppercase px-3 py-2 min-h-[40px] focus:outline-none focus:border-brass-500 focus-visible:ring-2 focus-visible:ring-brass-500"
+              className="w-auto max-w-[180px] bg-bone-50 border border-combat-900 text-combat-900 font-mono font-bold text-[11px] tracking-[.20em] uppercase px-3 py-2 min-h-[40px] focus:outline-none focus:border-brass-500 focus-visible:ring-2 focus-visible:ring-brass-500"
             >
               {SORT_OPTIONS.map((o) => (
                 <option key={o.value} value={o.value}>
@@ -102,7 +102,7 @@ export function ShopFilters({ resultsCount }: Props) {
               ))}
             </select>
           </label>
-          <span className="font-mono font-bold text-[10px] tracking-[.20em] uppercase text-ash-600 tabular-nums">
+          <span className="font-mono font-bold text-[10px] tracking-[.20em] uppercase text-ash-600 tabular-nums shrink-0">
             {resultsCount} {resultsCount === 1 ? "Product" : "Products"}
           </span>
         </div>

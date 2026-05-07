@@ -58,6 +58,15 @@ export function SectionHeader({
       return;
     }
 
+    // If section is already on-screen at mount (user landed via anchor link,
+    // browser back/forward, or refreshed mid-page), skip the entrance
+    // animation. Otherwise GSAP would flip elements to opacity:0 and animate
+    // them back in — visible as a flicker on the title.
+    const rect = root.getBoundingClientRect();
+    const alreadyVisible =
+      rect.top < window.innerHeight * 0.82 && rect.bottom > 0;
+    if (alreadyVisible) return;
+
     const ctx = gsap.context(() => {
       const ease = "power3.out";
       // immediateRender:false means GSAP does NOT pre-apply opacity:0 / transforms

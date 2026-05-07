@@ -76,10 +76,10 @@ export function SiteHeader() {
               <Image
                 src="/logo.avif"
                 alt={`${BRAND.name} logo`}
-                width={64}
-                height={64}
+                width={150}
+                height={94}
                 priority
-                className="h-12 w-auto sm:h-14"
+                className="h-11 w-auto sm:h-14"
               />
             </Link>
 
@@ -120,7 +120,7 @@ export function SiteHeader() {
             </nav>
 
             {/* Actions */}
-            <div className="flex items-center gap-1 sm:gap-3">
+            <div className="flex items-center justify-end gap-2 sm:gap-3">
               {/* Search trigger — desktop pill */}
               <button
                 type="button"
